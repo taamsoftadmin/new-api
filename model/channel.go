@@ -100,7 +100,7 @@ func SearchChannels(keyword string, group string, model string) ([]*Channel, err
 		modelsCol = `"models"`
 	}
 
-	// 构造基础查询
+	// 构造基础Query
 	baseQuery := DB.Model(&Channel{}).Omit(keyCol)
 
 	// 构造WHERE子句
@@ -121,7 +121,7 @@ func SearchChannels(keyword string, group string, model string) ([]*Channel, err
 		args = append(args, common.String2Int(keyword), "%"+keyword+"%", keyword, "%"+model+"%")
 	}
 
-	// 执行查询
+	// 执行Query
 	err := baseQuery.Where(whereClause, args...).Order("priority desc").Find(&channels).Error
 	if err != nil {
 		return nil, err
@@ -156,7 +156,7 @@ func BatchInsertChannels(channels []Channel) error {
 }
 
 func BatchDeleteChannels(ids []int) error {
-	//使用事务 删除channel表和channel_ability表
+	//使用事务 Deletechannel表和channel_ability表
 	tx := DB.Begin()
 	err := tx.Where("id in (?)", ids).Delete(&Channel{}).Error
 	if err != nil {
@@ -170,7 +170,7 @@ func BatchDeleteChannels(ids []int) error {
 		tx.Rollback()
 		return err
 	}
-	// 提交事务
+	// Submit事务
 	tx.Commit()
 	return err
 }

@@ -263,7 +263,7 @@ function App() {
             </Suspense>
           }
         />
-        {/* 方便使用chat2link直接跳转聊天... */}
+        {/* 方便使用chat2link直接跳转Chat... */}
           <Route
             path='/chat2link'
             element={

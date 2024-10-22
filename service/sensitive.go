@@ -54,13 +54,13 @@ func CheckSensitiveInput(input any) error {
 	return CheckSensitiveText(fmt.Sprintf("%v", input))
 }
 
-// SensitiveWordContains 是否包含敏感词，返回是否包含敏感词和敏感词列表
+// SensitiveWordContains 是否包含敏感词，Back是否包含敏感词和敏感词列表
 func SensitiveWordContains(text string) (bool, []string) {
 	if len(constant.SensitiveWords) == 0 {
 		return false, nil
 	}
 	checkText := strings.ToLower(text)
-	// 构建一个AC自动机
+	// 构建一  AC自动机
 	m := InitAc()
 	hits := m.MultiPatternSearch([]rune(checkText), false)
 	if len(hits) > 0 {
@@ -73,7 +73,7 @@ func SensitiveWordContains(text string) (bool, []string) {
 	return false, nil
 }
 
-// SensitiveWordReplace 敏感词替换，返回是否包含敏感词和替换后的文本
+// SensitiveWordReplace 敏感词替换，Back是否包含敏感词和替换后的文本
 func SensitiveWordReplace(text string, returnImmediately bool) (bool, []string, string) {
 	if len(constant.SensitiveWords) == 0 {
 		return false, nil, text

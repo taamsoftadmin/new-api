@@ -60,38 +60,38 @@ export const CHANNEL_OPTIONS = [
   },
   {
     key: 15,
-    text: '百度文心千帆',
+    text: 'Baidu Wenxin Qianfan',
     value: 15,
     color: 'blue',
-    label: '百度文心千帆'
+    label: 'Baidu Wenxin Qianfan'
   },
   {
     key: 17,
-    text: '阿里通义千问',
+    text: 'Alibaba Tongyi Qianwen',
     value: 17,
     color: 'orange',
-    label: '阿里通义千问'
+    label: 'Alibaba Tongyi Qianwen'
   },
   {
     key: 18,
-    text: '讯飞星火认知',
+    text: 'iFlytek Starfire Cognition',
     value: 18,
     color: 'blue',
-    label: '讯飞星火认知'
+    label: 'iFlytek Starfire Cognition'
   },
   {
     key: 16,
-    text: '智谱 ChatGLM',
+    text: 'Zhipu ChatGLM',
     value: 16,
     color: 'violet',
-    label: '智谱 ChatGLM'
+    label: 'Zhipu ChatGLM'
   },
   {
     key: 26,
-    text: '智谱 GLM-4V',
+    text: 'Zhipu GLM-4V',
     value: 26,
     color: 'purple',
-    label: '智谱 GLM-4V'
+    label: 'Zhipu GLM-4V'
   },
   {
     key: 11,
@@ -102,26 +102,26 @@ export const CHANNEL_OPTIONS = [
   },
   { key: 39, text: 'Cloudflare', value: 39, color: 'grey', label: 'Cloudflare' },
   { key: 25, text: 'Moonshot', value: 25, color: 'green', label: 'Moonshot' },
-  { key: 19, text: '360 智脑', value: 19, color: 'blue', label: '360 智脑' },
-  { key: 23, text: '腾讯混元', value: 23, color: 'teal', label: '腾讯混元' },
+  { key: 19, text: '360 Smart Brain', value: 19, color: 'blue', label: '360 Smart Brain' },
+  { key: 23, text: 'Tencent Hunyuan', value: 23, color: 'teal', label: 'Tencent Hunyuan' },
   { key: 31, text: '零一万物', value: 31, color: 'green', label: '零一万物' },
   { key: 35, text: 'MiniMax', value: 35, color: 'green', label: 'MiniMax' },
   { key: 37, text: 'Dify', value: 37, color: 'teal', label: 'Dify' },
   { key: 38, text: 'Jina', value: 38, color: 'blue', label: 'Jina' },
   { key: 40, text: 'SiliconCloud', value: 40, color: 'purple', label: 'SiliconCloud' },
-  { key: 8, text: '自定义渠道', value: 8, color: 'pink', label: '自定义渠道' },
+  { key: 8, text: 'Custom Channel', value: 8, color: 'pink', label: 'Custom Channel' },
   {
     key: 22,
-    text: '知识库：FastGPT',
+    text: 'Knowledge Base: FastGPT',
     value: 22,
     color: 'blue',
-    label: '知识库：FastGPT'
+    label: 'Knowledge Base: FastGPT'
   },
   {
     key: 21,
-    text: '知识库：AI Proxy',
+    text: 'Knowledge Base: AI Proxy',
     value: 21,
     color: 'purple',
-    label: '知识库：AI Proxy'
+    label: 'Knowledge Base: AI Proxy'
   }
 ];

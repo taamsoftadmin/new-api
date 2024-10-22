@@ -39,7 +39,7 @@ func (a *Adaptor) GetRequestURL(info *relaycommon.RelayInfo) (string, error) {
 		task := strings.TrimPrefix(requestURL, "/v1/")
 		model_ := info.UpstreamModelName
 		model_ = strings.Replace(model_, ".", "", -1)
-		// https://github.com/songquanpeng/one-api/issues/67
+		// #/issues/67
 
 		requestURL = fmt.Sprintf("/openai/deployments/%s/%s", model_, task)
 		return relaycommon.GetFullRequestURL(info.BaseUrl, requestURL, info.ChannelType), nil
@@ -65,7 +65,7 @@ func (a *Adaptor) SetupRequestHeader(c *gin.Context, req *http.Request, info *re
 	}
 	req.Header.Set("Authorization", "Bearer "+info.ApiKey)
 	//if info.ChannelType == common.ChannelTypeOpenRouter {
-	//	req.Header.Set("HTTP-Referer", "https://github.com/songquanpeng/one-api")
+	//	req.Header.Set("HTTP-Referer", "#")
 	//	req.Header.Set("X-Title", "One API")
 	//}
 	return nil
@@ -120,7 +120,7 @@ func (a *Adaptor) ConvertAudioRequest(c *gin.Context, info *relaycommon.RelayInf
 			return nil, errors.New("copy file failed")
 		}
 
-		// 关闭 multipart 编写器以设置分界线
+		// Close multipart 编写器以Settings分界线
 		writer.Close()
 		c.Request.Header.Set("Content-Type", writer.FormDataContentType())
 		return &requestBody, nil

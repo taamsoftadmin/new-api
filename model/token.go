@@ -69,19 +69,19 @@ func SearchUserTokens(userId int, keyword string, token string) (tokens []*Token
 
 func ValidateUserToken(key string) (token *Token, err error) {
 	if key == "" {
-		return nil, errors.New("未提供令牌")
+		return nil, errors.New("No token provided")
 	}
 	token, err = CacheGetTokenByKey(key)
 	if err == nil {
 		if token.Status == common.TokenStatusExhausted {
 			keyPrefix := key[:3]
 			keySuffix := key[len(key)-3:]
-			return token, errors.New("该令牌额度已用尽 TokenStatusExhausted[sk-" + keyPrefix + "***" + keySuffix + "]")
+			return token, errors.New("The token quota has been used up TokenStatusExhausted[sk-" + keyPrefix + "***" + keySuffix + "]")
 		} else if token.Status == common.TokenStatusExpired {
-			return token, errors.New("该令牌已过期")
+			return token, errors.New("The token has expired")
 		}
 		if token.Status != common.TokenStatusEnabled {
-			return token, errors.New("该令牌状态不可用")
+			return token, errors.New("The token status is not available")
 		}
 		if token.ExpiredTime != -1 && token.ExpiredTime < common.GetTimestamp() {
 			if !common.RedisEnabled {
@@ -91,7 +91,7 @@ func ValidateUserToken(key string) (token *Token, err error) {
 					common.SysError("failed to update token status" + err.Error())
 				}
 			}
-			return token, errors.New("该令牌已过期")
+			return token, errors.New("The token has expired")
 		}
 		if !token.UnlimitedQuota && token.RemainQuota <= 0 {
 			if !common.RedisEnabled {
@@ -104,16 +104,16 @@ func ValidateUserToken(key string) (token *Token, err error) {
 			}
 			keyPrefix := key[:3]
 			keySuffix := key[len(key)-3:]
-			return token, errors.New(fmt.Sprintf("[sk-%s***%s] 该令牌额度已用尽 !token.UnlimitedQuota && token.RemainQuota = %d", keyPrefix, keySuffix, token.RemainQuota))
+			return token, errors.New(fmt.Sprintf("[sk-%s***%s] The token quota has been used up !token.UnlimitedQuota && token.RemainQuota = %d", keyPrefix, keySuffix, token.RemainQuota))
 		}
 		return token, nil
 	}
-	return nil, errors.New("无效的令牌")
+	return nil, errors.New("Invalid token")
 }
 
 func GetTokenByIds(id int, userId int) (*Token, error) {
 	if id == 0 || userId == 0 {
-		return nil, errors.New("id 或 userId 为空！")
+		return nil, errors.New("id or userId is empty!")
 	}
 	token := Token{Id: id, UserId: userId}
 	var err error = nil
@@ -123,7 +123,7 @@ func GetTokenByIds(id int, userId int) (*Token, error) {
 
 func GetTokenById(id int) (*Token, error) {
 	if id == 0 {
-		return nil, errors.New("id 为空！")
+		return nil, errors.New("id is empty!")
 	}
 	token := Token{Id: id}
 	var err error = nil
@@ -204,7 +204,7 @@ func DisableModelLimits(tokenId int) error {
 func DeleteTokenById(id int, userId int) (err error) {
 	// Why we need userId here? In case user want to delete other's token.
 	if id == 0 || userId == 0 {
-		return errors.New("id 或 userId 为空！")
+		return errors.New("id or userId is empty!")
 	}
 	token := Token{Id: id, UserId: userId}
 	err = DB.Where(token).First(&token).Error
@@ -216,7 +216,7 @@ func DeleteTokenById(id int, userId int) (err error) {
 
 func IncreaseTokenQuota(id int, quota int) (err error) {
 	if quota < 0 {
-		return errors.New("quota 不能为负数！")
+		return errors.New("quota cannot be negative!")
 	}
 	if common.BatchUpdateEnabled {
 		addNewRecord(BatchUpdateTypeTokenQuota, id, quota)
@@ -238,7 +238,7 @@ func increaseTokenQuota(id int, quota int) (err error) {
 
 func DecreaseTokenQuota(id int, quota int) (err error) {
 	if quota < 0 {
-		return errors.New("quota 不能为负数！")
+		return errors.New("quota cannot be negative!")
 	}
 	if common.BatchUpdateEnabled {
 		addNewRecord(BatchUpdateTypeTokenQuota, id, -quota)
@@ -260,7 +260,7 @@ func decreaseTokenQuota(id int, quota int) (err error) {
 
 func PreConsumeTokenQuota(relayInfo *relaycommon.RelayInfo, quota int) (userQuota int, err error) {
 	if quota < 0 {
-		return 0, errors.New("quota 不能为负数！")
+		return 0, errors.New("quota cannot be negative!")
 	}
 	if !relayInfo.IsPlayground {
 		token, err := GetTokenById(relayInfo.TokenId)
@@ -268,7 +268,7 @@ func PreConsumeTokenQuota(relayInfo *relaycommon.RelayInfo, quota int) (userQuot
 			return 0, err
 		}
 		if !token.UnlimitedQuota && token.RemainQuota < quota {
-			return 0, errors.New("令牌额度不足")
+			return 0, errors.New("Insufficient token quota")
 		}
 	}
 	userQuota, err = GetUserQuota(relayInfo.UserId)
@@ -276,7 +276,7 @@ func PreConsumeTokenQuota(relayInfo *relaycommon.RelayInfo, quota int) (userQuot
 		return 0, err
 	}
 	if userQuota < quota {
-		return 0, errors.New(fmt.Sprintf("用户额度不足，剩余额度为 %d", userQuota))
+		return 0, errors.New(fmt.Sprintf("Insufficient user quota，Remaining quota for  %d", userQuota))
 	}
 	if !relayInfo.IsPlayground {
 		err = DecreaseTokenQuota(relayInfo.TokenId, quota)
@@ -320,14 +320,14 @@ func PostConsumeTokenQuota(relayInfo *relaycommon.RelayInfo, userQuota int, quot
 					if err != nil {
 						common.SysError("failed to fetch user email: " + err.Error())
 					}
-					prompt := "您的额度即将用尽"
+					prompt := "Your quota is about to run out"
 					if noMoreQuota {
-						prompt = "您的额度已用尽"
+						prompt = "Your quota has been used up"
 					}
 					if email != "" {
 						topUpLink := fmt.Sprintf("%s/topup", constant.ServerAddress)
 						err = common.SendEmail(prompt, email,
-							fmt.Sprintf("%s，当前剩余额度为 %d，为了不影响您的使用，请及时充值。<br/>充值链接：<a href='%s'>%s</a>", prompt, userQuota, topUpLink, topUpLink))
+							fmt.Sprintf("%s, the current remaining quota is %d, in order not to affect your use, please recharge in time. <br/> Recharge link: <a href='%s'>%s</a>", prompt, userQuota, topUpLink, topUpLink))
 						if err != nil {
 							common.SysError("failed to send email" + err.Error())
 						}

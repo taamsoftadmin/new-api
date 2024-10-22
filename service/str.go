@@ -25,7 +25,7 @@ func SundaySearch(text string, pattern string) bool {
 		for j < m && text[i+j] == pattern[j] {
 			j++
 		}
-		// 如果完全匹配，返回匹配位置
+		// 如果完全匹配，Back匹配位置
 		if j == m {
 			return true
 		}
@@ -36,13 +36,13 @@ func SundaySearch(text string, pattern string) bool {
 			if val, ok := offset[next]; ok {
 				i += val // 存在于偏移表中，进行跳跃
 			} else {
-				i += len(pattern) + 1 // 不存在于偏移表中，跳过整个模式串长度
+				i += len(pattern) + 1 // 不存在于偏移表中，跳过整  模式串长度
 			}
 		} else {
 			break
 		}
 	}
-	return false // 如果没有找到匹配，返回-1
+	return false // 如果没有找到匹配，Back-1
 }
 
 func RemoveDuplicate(s []string) []string {

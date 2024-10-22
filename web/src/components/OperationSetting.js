@@ -27,7 +27,7 @@ const OperationSetting = () => {
     UserUsableGroups: '',
     TopUpLink: '',
     ChatLink: '',
-    ChatLink2: '', // 添加的新状态变量
+    ChatLink2: '', // 添加的新Status变量
     QuotaPerUnit: 0,
     AutomaticDisableChannelEnabled: false,
     AutomaticEnableChannelEnabled: false,
@@ -49,7 +49,7 @@ const OperationSetting = () => {
     DataExportEnabled: false,
     DataExportDefaultTime: 'hour',
     DataExportInterval: 5,
-    DefaultCollapseSidebar: false, // 默认折叠侧边栏
+    DefaultCollapseSidebar: false, // Default Collapse Sidebar
     RetryTimes: 0,
     Chats: "[]",
   });
@@ -90,9 +90,9 @@ const OperationSetting = () => {
     try {
       setLoading(true);
       await getOptions();
-      showSuccess('刷新成功');
+      showSuccess('Refresh successful');
     } catch (error) {
-      showError('刷新失败');
+      showError('Refresh failed');
     } finally {
       setLoading(false);
     }
@@ -105,39 +105,39 @@ const OperationSetting = () => {
   return (
     <>
       <Spin spinning={loading} size='large'>
-        {/* 通用设置 */}
+        {/* General Settings */}
         <Card style={{ marginTop: '10px' }}>
           <SettingsGeneral options={inputs} refresh={onRefresh} />
         </Card>
-        {/* 绘图设置 */}
+        {/* Drawing Settings */}
         <Card style={{ marginTop: '10px' }}>
           <SettingsDrawing options={inputs} refresh={onRefresh} />
         </Card>
-        {/* 屏蔽词过滤设置 */}
+        {/* Sensitive Words Filtering Settings */}
         <Card style={{ marginTop: '10px' }}>
           <SettingsSensitiveWords options={inputs} refresh={onRefresh} />
         </Card>
-        {/* 日志设置 */}
+        {/* Log Settings */}
         <Card style={{ marginTop: '10px' }}>
           <SettingsLog options={inputs} refresh={onRefresh} />
         </Card>
-        {/* 数据看板 */}
+        {/* Data Dashboard */}
         <Card style={{ marginTop: '10px' }}>
           <SettingsDataDashboard options={inputs} refresh={onRefresh} />
         </Card>
-        {/* 监控设置 */}
+        {/* Monitoring Settings */}
         <Card style={{ marginTop: '10px' }}>
           <SettingsMonitoring options={inputs} refresh={onRefresh} />
         </Card>
-        {/* 额度设置 */}
+        {/* Quota Settings */}
         <Card style={{ marginTop: '10px' }}>
           <SettingsCreditLimit options={inputs} refresh={onRefresh} />
         </Card>
-        {/* 聊天设置 */}
+        {/* Chat Settings */}
         <Card style={{ marginTop: '10px' }}>
           <SettingsChats options={inputs} refresh={onRefresh} />
         </Card>
-        {/* 倍率设置 */}
+        {/* Rate Settings */}
         <Card style={{ marginTop: '10px' }}>
           <SettingsMagnification options={inputs} refresh={onRefresh} />
         </Card>

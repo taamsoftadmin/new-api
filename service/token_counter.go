@@ -63,7 +63,7 @@ func getTokenEncoder(model string) *tiktoken.Tiktoken {
 	if ok && tokenEncoder != nil {
 		return tokenEncoder
 	}
-	// 如果ok（即model在tokenEncoderMap中），但是tokenEncoder为nil，说明可能是自定义模型
+	// 如果ok（即model在tokenEncoderMap中），但是tokenEncoder for nil，说明可能是CustomModel
 	if ok {
 		tokenEncoder, err := tiktoken.EncodingForModel(model)
 		if err != nil {
@@ -73,7 +73,7 @@ func getTokenEncoder(model string) *tiktoken.Tiktoken {
 		tokenEncoderMap[model] = tokenEncoder
 		return tokenEncoder
 	}
-	// 如果model不在tokenEncoderMap中，直接返回默认的tokenEncoder
+	// 如果model不在tokenEncoderMap中，直接BackDefault的tokenEncoder
 	return getModelDefaultTokenEncoder(model)
 }
 
@@ -89,7 +89,7 @@ func getImageToken(imageUrl *dto.MessageImageUrl, model string, stream bool) (in
 	if imageUrl.Detail == "low" {
 		return baseTokens, nil
 	}
-	// TODO: 非流模式下不计算图片token数量
+	// TODO: 非流模式下不计算图片tokenQuantity
 	if !constant.GetMediaTokenNotStream && !stream {
 		return 1000, nil
 	}
@@ -97,7 +97,7 @@ func getImageToken(imageUrl *dto.MessageImageUrl, model string, stream bool) (in
 	if !constant.GetMediaToken {
 		return 1000, nil
 	}
-	// 同步One API的图片计费逻辑
+	// 同步One API的图片billing逻辑
 	if imageUrl.Detail == "auto" || imageUrl.Detail == "" {
 		imageUrl.Detail = "high"
 	}
@@ -123,7 +123,7 @@ func getImageToken(imageUrl *dto.MessageImageUrl, model string, stream bool) (in
 	if config.Width == 0 || config.Height == 0 {
 		return 0, errors.New(fmt.Sprintf("fail to decode image config: %s", imageUrl.Url))
 	}
-	//// TODO: 适配官方auto计费
+	//// TODO: 适配官方autobilling
 	//if config.Width < 512 && config.Height < 512 {
 	//	if imageUrl.Detail == "auto" || imageUrl.Detail == "" {
 	//		// 如果图片尺寸小于512，强制使用low
@@ -150,7 +150,7 @@ func getImageToken(imageUrl *dto.MessageImageUrl, model string, stream bool) (in
 	// 将另一边按照相同的比例缩小，向上取整
 	otherSide = int(math.Ceil(float64(otherSide) / scale))
 	log.Printf("shortSide: %d, otherSide: %d, scale: %f", shortSide, otherSide, scale)
-	// 计算图片的token数量(边的长度除以512，向上取整)
+	// 计算图片的tokenQuantity(边的长度除以512，向上取整)
 	tiles := (shortSide + 511) / 512 * ((otherSide + 511) / 512)
 	log.Printf("tiles: %d", tiles)
 	return tiles*tileTokens + baseTokens, nil
@@ -281,7 +281,7 @@ func CountAudioToken(text string, model string) (int, error) {
 	}
 }
 
-// CountTokenText 统计文本的token数量，仅当文本包含敏感词，返回错误，同时返回token数量
+// CountTokenText 统计文本的tokenQuantity，仅当文本包含敏感词，Back错误，同时BacktokenQuantity
 func CountTokenText(text string, model string) (int, error) {
 	var err error
 	tokenEncoder := getTokenEncoder(model)

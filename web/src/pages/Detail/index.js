@@ -76,7 +76,7 @@ const Detail = (props) => {
     },
     title: {
       visible: true,
-      text: '模型消耗分布',
+      text: 'Model Consumption Distribution',
       subtext: '0',
     },
     bar: {
@@ -163,7 +163,7 @@ const Detail = (props) => {
     },
     title: {
       visible: true,
-      text: '模型调用次数占比',
+      text: 'Proportion of Model Calls',
     },
     legends: {
       visible: true,
@@ -205,12 +205,12 @@ const Detail = (props) => {
       if (data.length === 0) {
         data.push({
           count: 0,
-          model_name: '无数据',
+          model_name: 'No Data',
           quota: 0,
           created_at: now.getTime() / 1000,
         });
       }
-      // 根据dataExportDefaultTime重制时间粒度
+      // 根据dataExportDefaultTime重制Time Granularity
       let timeGranularity = 3600;
       if (dataExportDefaultTime === 'day') {
         timeGranularity = 86400;
@@ -253,7 +253,7 @@ const Detail = (props) => {
 
   const updateChart = (lineChart, pieChart, data) => {
     if (isAdminUser) {
-      // 将所有用户合并
+      // 将所有User合并
     }
     let pieData = [];
     let lineData = [];
@@ -273,7 +273,7 @@ const Detail = (props) => {
           value: item.count,
         });
       }
-      // 合并created_at和model_name 为 lineData, created_at 数据类型是小时的时间戳
+      // 合并created_at和model_name  for  lineData, created_at  DateType是 h 的Time戳
       // 转换日期格式
       let createTime = timestamp2string1(
         item.created_at,
@@ -297,10 +297,10 @@ const Detail = (props) => {
 
     // sort by count
     pieData.sort((a, b) => b.value - a.value);
-    spec_pie.title.subtext = `总计：${renderNumber(times)}`;
+    spec_pie.title.subtext = `Total: ${renderNumber(times)}`;
     spec_pie.data[0].values = pieData;
 
-    spec_line.title.subtext = `总计：${renderQuota(consumeQuota, 2)}`;
+    spec_line.title.subtext = `Total: ${renderQuota(consumeQuota, 2)}`;
     spec_line.data[0].values = lineData;
     pieChart.updateSpec(spec_pie);
     lineChart.updateSpec(spec_line);
@@ -314,7 +314,7 @@ const Detail = (props) => {
   useEffect(() => {
     // setDataExportDefaultTime(localStorage.getItem('data_export_default_time'));
     // if (dataExportDefaultTime === 'day') {
-    //     // 设置开始时间为7天前
+    //     // Settings开始Time for 7 d 前
     //     let st = timestamp2string(now.getTime() / 1000 - 86400 * 7)
     //     inputs.start_timestamp = st;
     //     formRef.current.formApi.setValue('start_timestamp', st);
@@ -332,14 +332,14 @@ const Detail = (props) => {
     <>
       <Layout>
         <Layout.Header>
-          <h3>数据看板</h3>
+          <h3>Data Dashboard</h3>
         </Layout.Header>
         <Layout.Content>
           <Form ref={formRef} layout='horizontal' style={{ marginTop: 10 }}>
             <>
               <Form.DatePicker
                 field='start_timestamp'
-                label='起始时间'
+                label='Start Time'
                 style={{ width: 272 }}
                 initValue={start_timestamp}
                 value={start_timestamp}
@@ -352,7 +352,7 @@ const Detail = (props) => {
               <Form.DatePicker
                 field='end_timestamp'
                 fluid
-                label='结束时间'
+                label='End Time'
                 style={{ width: 272 }}
                 initValue={end_timestamp}
                 value={end_timestamp}
@@ -362,14 +362,14 @@ const Detail = (props) => {
               />
               <Form.Select
                 field='data_export_default_time'
-                label='时间粒度'
+                label='Time Granularity'
                 style={{ width: 176 }}
                 initValue={dataExportDefaultTime}
-                placeholder={'时间粒度'}
+                placeholder={'Time Granularity'}
                 name='data_export_default_time'
                 optionList={[
-                  { label: '小时', value: 'hour' },
-                  { label: '天', value: 'day' },
+                  { label: ' h ', value: 'hour' },
+                  { label: ' d ', value: 'day' },
                   { label: '周', value: 'week' },
                 ]}
                 onChange={(value) =>
@@ -380,10 +380,10 @@ const Detail = (props) => {
                 <>
                   <Form.Input
                     field='username'
-                    label='用户名称'
+                    label='User Name'
                     style={{ width: 176 }}
                     value={username}
-                    placeholder={'可选值'}
+                    placeholder={'Optional Values'}
                     name='username'
                     onChange={(value) => handleInputChange(value, 'username')}
                   />
@@ -391,14 +391,14 @@ const Detail = (props) => {
               )}
               <Form.Section>
                 <Button
-                  label='查询'
+                  label='Query'
                   type='primary'
                   htmlType='submit'
                   className='btn-margin-right'
                   onClick={refresh}
                   loading={loading}
                 >
-                  查询
+                  Query
                 </Button>
               </Form.Section>
             </>

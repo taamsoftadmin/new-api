@@ -5,8 +5,8 @@ import (
 )
 
 var UserUsableGroups = map[string]string{
-	"default": "默认分组",
-	"vip":     "vip分组",
+	"default": "DefaultGroup",
+	"vip":     "vipGroup",
 }
 
 func UserUsableGroups2JSONString() string {
@@ -24,19 +24,19 @@ func UpdateUserUsableGroupsByJSONString(jsonStr string) error {
 
 func GetUserUsableGroups(userGroup string) map[string]string {
 	if userGroup == "" {
-		// 如果userGroup为空，返回UserUsableGroups
+		// 如果userGroup for 空，BackUserUsableGroups
 		return UserUsableGroups
 	}
-	// 如果userGroup不在UserUsableGroups中，返回UserUsableGroups + userGroup
+	// 如果userGroup不在UserUsableGroups中，BackUserUsableGroups + userGroup
 	if _, ok := UserUsableGroups[userGroup]; !ok {
 		appendUserUsableGroups := make(map[string]string)
 		for k, v := range UserUsableGroups {
 			appendUserUsableGroups[k] = v
 		}
-		appendUserUsableGroups[userGroup] = "用户分组"
+		appendUserUsableGroups[userGroup] = "user group"
 		return appendUserUsableGroups
 	}
-	// 如果userGroup在UserUsableGroups中，返回UserUsableGroups
+	// 如果userGroup在UserUsableGroups中，BackUserUsableGroups
 	return UserUsableGroups
 }
 

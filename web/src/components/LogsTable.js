@@ -39,8 +39,8 @@ function renderTimestamp(timestamp) {
 }
 
 const MODE_OPTIONS = [
-  { key: 'all', text: '全部用户', value: 'all' },
-  { key: 'self', text: '当前用户', value: 'self' },
+  { key: 'all', text: 'All users', value: 'all' },
+  { key: 'self', text: 'Current user', value: 'self' },
 ];
 
 const colors = [
@@ -67,35 +67,35 @@ function renderType(type) {
       return (
         <Tag color='cyan' size='large'>
           {' '}
-          充值{' '}
+          Recharge{' '}
         </Tag>
       );
     case 2:
       return (
         <Tag color='lime' size='large'>
           {' '}
-          消费{' '}
+          Consumption{' '}
         </Tag>
       );
     case 3:
       return (
         <Tag color='orange' size='large'>
           {' '}
-          管理{' '}
+          Management{' '}
         </Tag>
       );
     case 4:
       return (
         <Tag color='purple' size='large'>
           {' '}
-          系统{' '}
+          System{' '}
         </Tag>
       );
     default:
       return (
         <Tag color='black' size='large'>
           {' '}
-          未知{' '}
+          Unknown{' '}
         </Tag>
       );
   }
@@ -173,11 +173,11 @@ function renderFirstUseTime(type) {
 const LogsTable = () => {
   const columns = [
     {
-      title: '时间',
+      title: 'Time',
       dataIndex: 'timestamp2string',
     },
     {
-      title: '渠道',
+      title: 'Channel',
       dataIndex: 'channel',
       className: isAdmin() ? 'tableShow' : 'tableHiddle',
       render: (text, record, index) => {
@@ -203,7 +203,7 @@ const LogsTable = () => {
       },
     },
     {
-      title: '用户',
+      title: 'User',
       dataIndex: 'username',
       className: isAdmin() ? 'tableShow' : 'tableHiddle',
       render: (text, record, index) => {
@@ -225,7 +225,7 @@ const LogsTable = () => {
       },
     },
     {
-      title: '令牌',
+      title: 'Token',
       dataIndex: 'token_name',
       render: (text, record, index) => {
         return record.type === 0 || record.type === 2 ? (
@@ -247,14 +247,14 @@ const LogsTable = () => {
       },
     },
     {
-      title: '类型',
+      title: 'Type',
       dataIndex: 'type',
       render: (text, record, index) => {
         return <>{renderType(text)}</>;
       },
     },
     {
-      title: '模型',
+      title: 'Model',
       dataIndex: 'model_name',
       render: (text, record, index) => {
         return record.type === 0 || record.type === 2 ? (
@@ -276,7 +276,7 @@ const LogsTable = () => {
       },
     },
     {
-      title: '用时/首字',
+      title: ' Usage/first word ',
       dataIndex: 'use_time',
       render: (text, record, index) => {
         if (record.is_stream) {
@@ -303,7 +303,7 @@ const LogsTable = () => {
       },
     },
     {
-      title: '提示',
+      title: 'Prompt',
       dataIndex: 'prompt_tokens',
       render: (text, record, index) => {
         return record.type === 0 || record.type === 2 ? (
@@ -314,7 +314,7 @@ const LogsTable = () => {
       },
     },
     {
-      title: '补全',
+      title: 'Completion',
       dataIndex: 'completion_tokens',
       render: (text, record, index) => {
         return parseInt(text) > 0 &&
@@ -326,7 +326,7 @@ const LogsTable = () => {
       },
     },
     {
-      title: '花费',
+      title: ' spend ',
       dataIndex: 'quota',
       render: (text, record, index) => {
         return record.type === 0 || record.type === 2 ? (
@@ -337,11 +337,11 @@ const LogsTable = () => {
       },
     },
     {
-      title: '重试',
+      title: 'Retry',
       dataIndex: 'retry',
       className: isAdmin() ? 'tableShow' : 'tableHiddle',
       render: (text, record, index) => {
-        let content = '渠道：' + record.channel;
+        let content = 'Channel：' + record.channel;
         if (record.other !== '') {
           let other = JSON.parse(record.other);
           if (other === null) {
@@ -356,7 +356,7 @@ const LogsTable = () => {
               // channel id array
               let useChannel = other.admin_info.use_channel;
               let useChannelStr = useChannel.join('->');
-              content = `渠道：${useChannelStr}`;
+              content = `Channel：${useChannelStr}`;
             }
           }
         }
@@ -364,7 +364,7 @@ const LogsTable = () => {
       },
     },
     {
-      title: '详情',
+      title: 'Details',
       dataIndex: 'content',
       render: (text, record, index) => {
         let other = getLogOther(record.other);
@@ -418,7 +418,7 @@ const LogsTable = () => {
   const [logType, setLogType] = useState(0);
   const isAdminUser = isAdmin();
   let now = new Date();
-  // 初始化start_timestamp为今天0点
+  // 初始化start_timestamp for 今 d 0点
   const [inputs, setInputs] = useState({
     username: '',
     token_name: '',
@@ -495,13 +495,13 @@ const LogsTable = () => {
     const { success, message, data } = res.data;
     if (success) {
       Modal.info({
-        title: '用户信息',
+        title: 'User信息',
         content: (
           <div style={{ padding: 12 }}>
-            <p>用户名: {data.username}</p>
-            <p>余额: {renderQuota(data.quota)}</p>
-            <p>已用额度：{renderQuota(data.used_quota)}</p>
-            <p>请求次数：{renderNumber(data.request_count)}</p>
+            <p>username: {data.username}</p>
+            <p>Balance: {renderQuota(data.quota)}</p>
+            <p>Quota used：{renderQuota(data.used_quota)}</p>
+            <p>Number of Requests：{renderNumber(data.request_count)}</p>
           </div>
         ),
         centered: true,
@@ -570,9 +570,9 @@ const LogsTable = () => {
 
   const copyText = async (text) => {
     if (await copy(text)) {
-      showSuccess('已复制：' + text);
+      showSuccess('Copied: ' + text);
     } else {
-      Modal.error({ title: '无法复制到剪贴板，请手动复制', content: text });
+      Modal.error({ title: 'Unable to copy to clipboard, please copy manually.', content: text });
     }
   };
 
@@ -595,7 +595,7 @@ const LogsTable = () => {
           <Spin spinning={loadingStat}>
             <Space>
               <Tag color='green' size='large' style={{ padding: 15 }}>
-                总消耗额度: {renderQuota(stat.quota)}
+                Total consumption quota: {renderQuota(stat.quota)}
               </Tag>
               <Tag color='blue' size='large' style={{ padding: 15 }}>
                 RPM: {stat.rpm}
@@ -610,25 +610,25 @@ const LogsTable = () => {
           <>
             <Form.Input
               field='token_name'
-              label='令牌名称'
+              label='Token Name'
               style={{ width: 176 }}
               value={token_name}
-              placeholder={'可选值'}
+              placeholder={'Optional Values'}
               name='token_name'
               onChange={(value) => handleInputChange(value, 'token_name')}
             />
             <Form.Input
               field='model_name'
-              label='模型名称'
+              label='Model Name'
               style={{ width: 176 }}
               value={model_name}
-              placeholder='可选值'
+              placeholder='Optional Values'
               name='model_name'
               onChange={(value) => handleInputChange(value, 'model_name')}
             />
             <Form.DatePicker
               field='start_timestamp'
-              label='起始时间'
+              label='Start Time'
               style={{ width: 272 }}
               initValue={start_timestamp}
               value={start_timestamp}
@@ -639,7 +639,7 @@ const LogsTable = () => {
             <Form.DatePicker
               field='end_timestamp'
               fluid
-              label='结束时间'
+              label='End Time'
               style={{ width: 272 }}
               initValue={end_timestamp}
               value={end_timestamp}
@@ -651,26 +651,26 @@ const LogsTable = () => {
               <>
                 <Form.Input
                   field='channel'
-                  label='渠道 ID'
+                  label='Channel ID'
                   style={{ width: 176 }}
                   value={channel}
-                  placeholder='可选值'
+                  placeholder='Optional Values'
                   name='channel'
                   onChange={(value) => handleInputChange(value, 'channel')}
                 />
                 <Form.Input
                   field='username'
-                  label='用户名称'
+                  label='User Name'
                   style={{ width: 176 }}
                   value={username}
-                  placeholder={'可选值'}
+                  placeholder={'Optional Values'}
                   name='username'
                   onChange={(value) => handleInputChange(value, 'username')}
                 />
               </>
             )}
             <Button
-              label='查询'
+              label='Query'
               type='primary'
               htmlType='submit'
               className='btn-margin-right'
@@ -678,7 +678,7 @@ const LogsTable = () => {
               loading={loading}
               style={{ marginTop: 24 }}
             >
-              查询
+              Query
             </Button>
             <Form.Section></Form.Section>
           </>
@@ -707,11 +707,11 @@ const LogsTable = () => {
             loadLogs(0, pageSize, parseInt(value));
           }}
         >
-          <Select.Option value='0'>全部</Select.Option>
-          <Select.Option value='1'>充值</Select.Option>
-          <Select.Option value='2'>消费</Select.Option>
-          <Select.Option value='3'>管理</Select.Option>
-          <Select.Option value='4'>系统</Select.Option>
+          <Select.Option value='0'>All</Select.Option>
+          <Select.Option value='1'>Recharge</Select.Option>
+          <Select.Option value='2'>Consumption</Select.Option>
+          <Select.Option value='3'>Management</Select.Option>
+          <Select.Option value='4'>System</Select.Option>
         </Select>
       </Layout>
     </>

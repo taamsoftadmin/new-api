@@ -30,7 +30,7 @@ func (a *Adaptor) Init(info *relaycommon.RelayInfo) {
 }
 
 func (a *Adaptor) GetRequestURL(info *relaycommon.RelayInfo) (string, error) {
-	// 从映射中获取模型名称对应的版本，如果找不到就使用 info.ApiVersion 或默认的版本 "v1"
+	// 从映射中获取Model Name对应的Version，如果找不到就使用 info.ApiVersion 或Default的Version "v1"
 	version, beta := constant.GeminiModelMap[info.UpstreamModelName]
 	if !beta {
 		if info.ApiVersion != "" {

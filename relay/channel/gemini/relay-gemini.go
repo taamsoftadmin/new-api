@@ -85,7 +85,7 @@ func CovertGemini2OpenAI(textRequest dto.GeneralOpenAIRequest) *GeminiChatReques
 				}
 				// 判断是否是url
 				if strings.HasPrefix(part.ImageUrl.(dto.MessageImageUrl).Url, "http") {
-					// 是url，获取图片的类型和base64编码的数据
+					// 是url，获取图片的Type和base64编码的 Date
 					mimeType, data, _ := service.GetImageFromUrl(part.ImageUrl.(dto.MessageImageUrl).Url)
 					parts = append(parts, GeminiPart{
 						InlineData: &GeminiInlineData{

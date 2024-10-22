@@ -20,7 +20,7 @@ export default function SettingsSensitiveWords(props) {
 
   function onSubmit() {
     const updateArray = compareObjects(inputs, inputsRow);
-    if (!updateArray.length) return showWarning('你似乎并没有修改什么');
+    if (!updateArray.length) return showWarning('It seems you havent modified anything');
     const requestQueue = updateArray.map((item) => {
       let value = '';
       if (typeof inputs[item.key] === 'boolean') {
@@ -39,13 +39,13 @@ export default function SettingsSensitiveWords(props) {
         if (requestQueue.length === 1) {
           if (res.includes(undefined)) return;
         } else if (requestQueue.length > 1) {
-          if (res.includes(undefined)) return showError('部分保存失败，请重试');
+          if (res.includes(undefined)) return showError('部分Save failed, please try again');
         }
-        showSuccess('保存成功');
+        showSuccess('Save Successful');
         props.refresh();
       })
       .catch(() => {
-        showError('保存失败，请重试');
+        showError('Save failed, please try again');
       })
       .finally(() => {
         setLoading(false);
@@ -71,12 +71,12 @@ export default function SettingsSensitiveWords(props) {
           getFormApi={(formAPI) => (refForm.current = formAPI)}
           style={{ marginBottom: 15 }}
         >
-          <Form.Section text={'屏蔽词过滤设置'}>
+          <Form.Section text={'Sensitive Words Filtering Settings'}>
             <Row gutter={16}>
               <Col span={8}>
                 <Form.Switch
                   field={'CheckSensitiveEnabled'}
-                  label={'启用屏蔽词过滤功能'}
+                  label={'Enable Sensitive Word Filtering'}
                   size='large'
                   checkedText='｜'
                   uncheckedText='〇'
@@ -91,7 +91,7 @@ export default function SettingsSensitiveWords(props) {
               <Col span={8}>
                 <Form.Switch
                   field={'CheckSensitiveOnPromptEnabled'}
-                  label={'启用 Prompt 检查'}
+                  label={'Enable Prompt Check'}
                   size='large'
                   checkedText='｜'
                   uncheckedText='〇'
@@ -107,9 +107,9 @@ export default function SettingsSensitiveWords(props) {
             <Row>
               <Col span={16}>
                 <Form.TextArea
-                  label={'屏蔽词列表'}
-                  extraText={'一行一个屏蔽词，不需要符号分割'}
-                  placeholder={'一行一个屏蔽词，不需要符号分割'}
+                  label={'Sensitive Word List'}
+                  extraText={'One sensitive word per line, no symbols needed for separation'}
+                  placeholder={'One sensitive word per line, no symbols needed for separation'}
                   field={'SensitiveWords'}
                   onChange={(value) =>
                     setInputs({
@@ -124,7 +124,7 @@ export default function SettingsSensitiveWords(props) {
             </Row>
             <Row>
               <Button size='large' onClick={onSubmit}>
-                保存屏蔽词过滤设置
+                Save Sensitive Word Filtering Settings
               </Button>
             </Row>
           </Form.Section>

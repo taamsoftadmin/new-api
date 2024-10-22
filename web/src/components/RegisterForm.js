@@ -46,16 +46,16 @@ const RegisterForm = () => {
 
   async function handleSubmit(e) {
     if (password.length < 8) {
-      showInfo('密码长度不得小于 8 位！');
+      showInfo('Password length must be at least 8 characters!');
       return;
     }
     if (password !== password2) {
-      showInfo('两次输入的密码不一致');
+      showInfo('The two passwords entered do not match');
       return;
     }
     if (username && password) {
       if (turnstileEnabled && turnstileToken === '') {
-        showInfo('请稍后几秒重试，Turnstile 正在检查用户环境！');
+        showInfo('Please wait a few seconds to retry, Turnstile is checking the user environment!');
         return;
       }
       setLoading(true);
@@ -70,7 +70,7 @@ const RegisterForm = () => {
       const { success, message } = res.data;
       if (success) {
         navigate('/login');
-        showSuccess('注册成功！');
+        showSuccess('Registration Successful!');
       } else {
         showError(message);
       }
@@ -81,7 +81,7 @@ const RegisterForm = () => {
   const sendVerificationCode = async () => {
     if (inputs.email === '') return;
     if (turnstileEnabled && turnstileToken === '') {
-      showInfo('请稍后几秒重试，Turnstile 正在检查用户环境！');
+      showInfo('Please wait a few seconds to retry, Turnstile is checking the user environment!');
       return;
     }
     setLoading(true);
@@ -90,7 +90,7 @@ const RegisterForm = () => {
     );
     const { success, message } = res.data;
     if (success) {
-      showSuccess('验证码发送成功，请检查你的邮箱！');
+      showSuccess('Verification code sent successfully, please check your inbox!');
     } else {
       showError(message);
     }
@@ -112,28 +112,28 @@ const RegisterForm = () => {
             <div style={{ width: 500 }}>
               <Card>
                 <Title heading={2} style={{ textAlign: 'center' }}>
-                  新用户注册
+                  New User Registration
                 </Title>
                 <Form size="large">
                   <Form.Input
                     field={'username'}
-                    label={'用户名'}
-                    placeholder="用户名"
+                    label={'username'}
+                    placeholder="Username"
                     name="username"
                     onChange={(value) => handleChange('username', value)}
                   />
                   <Form.Input
                     field={'password'}
-                    label={'密码'}
-                    placeholder="密码，最短 8 位，最长 20 位"
+                    label={'Password'}
+                    placeholder="Password，最短 8 位，最长 20 位"
                     name="password"
                     type="password"
                     onChange={(value) => handleChange('password', value)}
                   />
                   <Form.Input
                     field={'password2'}
-                    label={'确认密码'}
-                    placeholder="确认密码"
+                    label={'Confirm Password'}
+                    placeholder="Confirm Password"
                     name="password2"
                     type="password"
                     onChange={(value) => handleChange('password2', value)}
@@ -142,21 +142,21 @@ const RegisterForm = () => {
                     <>
                       <Form.Input
                         field={'email'}
-                        label={'邮箱'}
-                        placeholder="输入邮箱地址"
+                        label={'Email'}
+                        placeholder="Enter Email Address"
                         onChange={(value) => handleChange('email', value)}
                         name="email"
                         type="email"
                         suffix={
                           <Button onClick={sendVerificationCode} disabled={loading}>
-                            获取验证码
+                            Get Verification Code
                           </Button>
                         }
                       />
                       <Form.Input
                         field={'verification_code'}
-                        label={'验证码'}
-                        placeholder="输入验证码"
+                        label={'Verification Code'}
+                        placeholder="Enter Verification Code"
                         onChange={(value) => handleChange('verification_code', value)}
                         name="verification_code"
                       />
@@ -172,7 +172,7 @@ const RegisterForm = () => {
                     htmlType={'submit'}
                     onClick={handleSubmit}
                   >
-                    注册
+                    Register
                   </Button>
                 </Form>
                 <div
@@ -183,9 +183,9 @@ const RegisterForm = () => {
                   }}
                 >
                   <Text>
-                    已有账户？
+                    Already have an account?
                     <Link to="/login">
-                      点击登录
+                      Click to log in
                     </Link>
                   </Text>
                 </div>

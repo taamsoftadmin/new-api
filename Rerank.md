@@ -3,7 +3,7 @@
 **简介**:Rerank API文档
 
 ## 接入Dify
-模型供应商选择Jina，按要求填写模型信息即可接入Dify。
+Model供应商 Select Jina，按要求填写Model信息即可接入Dify。
 
 ## 请求方式
 

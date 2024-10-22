@@ -21,7 +21,7 @@ export default function SettingsMonitoring(props) {
 
   function onSubmit() {
     const updateArray = compareObjects(inputs, inputsRow);
-    if (!updateArray.length) return showWarning('你似乎并没有修改什么');
+    if (!updateArray.length) return showWarning('It seems you havent modified anything');
     const requestQueue = updateArray.map((item) => {
       let value = '';
       if (typeof inputs[item.key] === 'boolean') {
@@ -40,13 +40,13 @@ export default function SettingsMonitoring(props) {
         if (requestQueue.length === 1) {
           if (res.includes(undefined)) return;
         } else if (requestQueue.length > 1) {
-          if (res.includes(undefined)) return showError('部分保存失败，请重试');
+          if (res.includes(undefined)) return showError('部分Save failed, please try again');
         }
-        showSuccess('保存成功');
+        showSuccess('Save Successful');
         props.refresh();
       })
       .catch(() => {
-        showError('保存失败，请重试');
+        showError('Save failed, please try again');
       })
       .finally(() => {
         setLoading(false);
@@ -72,15 +72,15 @@ export default function SettingsMonitoring(props) {
           getFormApi={(formAPI) => (refForm.current = formAPI)}
           style={{ marginBottom: 15 }}
         >
-          <Form.Section text={'监控设置'}>
+          <Form.Section text={'Monitoring Settings'}>
             <Row gutter={16}>
               <Col span={8}>
                 <Form.InputNumber
-                  label={'最长响应时间'}
+                  label={'Longest Response Time'}
                   step={1}
                   min={0}
-                  suffix={'秒'}
-                  extraText={'当运行通道全部测试时，超过此时间将自动禁用通道'}
+                  suffix={'s'}
+                  extraText={'If this time is exceeded during the testing of all running channels, the channel will be automatically disabled.'}
                   placeholder={''}
                   field={'ChannelDisableThreshold'}
                   onChange={(value) =>
@@ -93,11 +93,11 @@ export default function SettingsMonitoring(props) {
               </Col>
               <Col span={8}>
                 <Form.InputNumber
-                  label={'额度提醒阈值'}
+                  label={'Quota reminder threshold'}
                   step={1}
                   min={0}
                   suffix={'Token'}
-                  extraText={'低于此额度时将发送邮件提醒用户'}
+                  extraText={'Email will be sent to remind users when the quota is below this'}
                   placeholder={''}
                   field={'QuotaRemindThreshold'}
                   onChange={(value) =>
@@ -113,7 +113,7 @@ export default function SettingsMonitoring(props) {
               <Col span={8}>
                 <Form.Switch
                   field={'AutomaticDisableChannelEnabled'}
-                  label={'失败时自动禁用通道'}
+                  label={'Automatically disable the channel when it fails'}
                   size='large'
                   checkedText='｜'
                   uncheckedText='〇'
@@ -128,7 +128,7 @@ export default function SettingsMonitoring(props) {
               <Col span={8}>
                 <Form.Switch
                   field={'AutomaticEnableChannelEnabled'}
-                  label={'成功时自动启用通道'}
+                  label={'Automatically enable channel on success'}
                   size='large'
                   checkedText='｜'
                   uncheckedText='〇'
@@ -143,7 +143,7 @@ export default function SettingsMonitoring(props) {
             </Row>
             <Row>
               <Button size='large' onClick={onSubmit}>
-                保存监控设置
+                Save Monitoring Settings
               </Button>
             </Row>
           </Form.Section>

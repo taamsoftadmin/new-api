@@ -21,7 +21,7 @@ export default function SettingsCreditLimit(props) {
 
   function onSubmit() {
     const updateArray = compareObjects(inputs, inputsRow);
-    if (!updateArray.length) return showWarning('你似乎并没有修改什么');
+    if (!updateArray.length) return showWarning('It seems you havent modified anything');
     const requestQueue = updateArray.map((item) => {
       let value = '';
       if (typeof inputs[item.key] === 'boolean') {
@@ -40,13 +40,13 @@ export default function SettingsCreditLimit(props) {
         if (requestQueue.length === 1) {
           if (res.includes(undefined)) return;
         } else if (requestQueue.length > 1) {
-          if (res.includes(undefined)) return showError('部分保存失败，请重试');
+          if (res.includes(undefined)) return showError('部分Save failed, please try again');
         }
-        showSuccess('保存成功');
+        showSuccess('Save Successful');
         props.refresh();
       })
       .catch(() => {
-        showError('保存失败，请重试');
+        showError('Save failed, please try again');
       })
       .finally(() => {
         setLoading(false);
@@ -72,11 +72,11 @@ export default function SettingsCreditLimit(props) {
           getFormApi={(formAPI) => (refForm.current = formAPI)}
           style={{ marginBottom: 15 }}
         >
-          <Form.Section text={'额度设置'}>
+          <Form.Section text={'Quota Settings'}>
             <Row gutter={16}>
               <Col span={6}>
                 <Form.InputNumber
-                  label={'新用户初始额度'}
+                  label={'Initial quota for new users'}
                   field={'QuotaForNewUser'}
                   step={1}
                   min={0}
@@ -92,12 +92,12 @@ export default function SettingsCreditLimit(props) {
               </Col>
               <Col span={6}>
                 <Form.InputNumber
-                  label={'请求预扣费额度'}
+                  label={'Request for pre-deducted quota'}
                   field={'PreConsumedQuota'}
                   step={1}
                   min={0}
                   suffix={'Token'}
-                  extraText={'请求结束后多退少补'}
+                  extraText={'Refund more or less after the request ends'}
                   placeholder={''}
                   onChange={(value) =>
                     setInputs({
@@ -109,13 +109,13 @@ export default function SettingsCreditLimit(props) {
               </Col>
               <Col span={6}>
                 <Form.InputNumber
-                  label={'邀请新用户奖励额度'}
+                  label={'Invite new users to reward quota'}
                   field={'QuotaForInviter'}
                   step={1}
                   min={0}
                   suffix={'Token'}
                   extraText={''}
-                  placeholder={'例如：2000'}
+                  placeholder={'For example：2000'}
                   onChange={(value) =>
                     setInputs({
                       ...inputs,
@@ -126,13 +126,13 @@ export default function SettingsCreditLimit(props) {
               </Col>
               <Col span={6}>
                 <Form.InputNumber
-                  label={'新用户使用邀请码奖励额度'}
+                  label={'New user rewards quota using invitation code'}
                   field={'QuotaForInvitee'}
                   step={1}
                   min={0}
                   suffix={'Token'}
                   extraText={''}
-                  placeholder={'例如：1000'}
+                  placeholder={'For example：1000'}
                   onChange={(value) =>
                     setInputs({
                       ...inputs,
@@ -145,7 +145,7 @@ export default function SettingsCreditLimit(props) {
 
             <Row>
               <Button size='large' onClick={onSubmit}>
-                保存额度设置
+                Save Quota Settings
               </Button>
             </Row>
           </Form.Section>

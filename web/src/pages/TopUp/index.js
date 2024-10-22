@@ -38,7 +38,7 @@ const TopUp = () => {
 
   const topUp = async () => {
     if (redemptionCode === '') {
-      showInfo('请输入兑换码！');
+      showInfo('Please enter the redemption code!');
       return;
     }
     setIsSubmitting(true);
@@ -48,10 +48,10 @@ const TopUp = () => {
       });
       const { success, message, data } = res.data;
       if (success) {
-        showSuccess('兑换成功！');
+        showSuccess('Redeem Successful!');
         Modal.success({
-          title: '兑换成功！',
-          content: '成功兑换额度：' + renderQuota(data),
+          title: 'Redeem Successful!',
+          content: 'SuccessRedeemQuota：' + renderQuota(data),
           centered: true,
         });
         setUserQuota((quota) => {
@@ -62,7 +62,7 @@ const TopUp = () => {
         showError(message);
       }
     } catch (err) {
-      showError('请求失败');
+      showError('Request failed');
     } finally {
       setIsSubmitting(false);
     }
@@ -70,7 +70,7 @@ const TopUp = () => {
 
   const openTopUpLink = () => {
     if (!topUpLink) {
-      showError('超级管理员未设置充值链接！');
+      showError('Super administrator has not set the recharge link!');
       return;
     }
     window.open(topUpLink, '_blank');
@@ -78,12 +78,12 @@ const TopUp = () => {
 
   const preTopUp = async (payment) => {
     if (!enableOnlineTopUp) {
-      showError('管理员未开启在线充值！');
+      showError('Admin未开启Online Top-Up！');
       return;
     }
     await getAmount();
     if (topUpCount < minTopUp) {
-      showError('充值数量不能小于' + minTopUp);
+      showError('Top-Up Amount不能小于' + minTopUp);
       return;
     }
     setPayWay(payment);
@@ -95,7 +95,7 @@ const TopUp = () => {
       await getAmount();
     }
     if (topUpCount < minTopUp) {
-      showError('充值数量不能小于' + minTopUp);
+      showError('Top-Up Amount不能小于' + minTopUp);
       return;
     }
     setOpen(false);
@@ -114,7 +114,7 @@ const TopUp = () => {
           let form = document.createElement('form');
           form.action = url;
           form.method = 'POST';
-          // 判断是否为safari浏览器
+          // 判断是否 for safari浏览器
           let isSafari =
             navigator.userAgent.indexOf('Safari') > -1 &&
             navigator.userAgent.indexOf('Chrome') < 1;
@@ -193,7 +193,7 @@ const TopUp = () => {
           setAmount(parseFloat(data));
         } else {
           setAmount(0);
-          Toast.error({ content: '错误：' + data, id: 'getAmount' });
+          Toast.error({ content: 'Error: ' + data, id: 'getAmount' });
           // setTopUpCount(parseInt(res.data.count));
           // setAmount(parseInt(data));
         }
@@ -214,11 +214,11 @@ const TopUp = () => {
     <div>
       <Layout>
         <Layout.Header>
-          <h3>我的钱包</h3>
+          <h3>My Wallet</h3>
         </Layout.Header>
         <Layout.Content>
           <Modal
-            title='确定要充值吗'
+            title='Are you sure you want to top up?'
             visible={open}
             onOk={onlineTopUp}
             onCancel={handleCancel}
@@ -226,24 +226,24 @@ const TopUp = () => {
             size={'small'}
             centered={true}
           >
-            <p>充值数量：{topUpCount}</p>
-            <p>实付金额：{renderAmount()}</p>
-            <p>是否确认充值？</p>
+            <p>Top-Up Amount:{topUpCount}</p>
+            <p>Amount Payable:{renderAmount()}</p>
+            <p>Do you confirm the top-up?</p>
           </Modal>
           <div
             style={{ marginTop: 20, display: 'flex', justifyContent: 'center' }}
           >
             <Card style={{ width: '500px', padding: '20px' }}>
               <Title level={3} style={{ textAlign: 'center' }}>
-                余额 {renderQuota(userQuota)}
+                Balance {renderQuota(userQuota)}
               </Title>
               <div style={{ marginTop: 20 }}>
-                <Divider>兑换余额</Divider>
+                <Divider>Redeem Balance</Divider>
                 <Form>
                   <Form.Input
                     field={'redemptionCode'}
-                    label={'兑换码'}
-                    placeholder='兑换码'
+                    label={'Redeem Code'}
+                    placeholder='Redeem Code'
                     name='redemptionCode'
                     value={redemptionCode}
                     onChange={(value) => {
@@ -257,7 +257,7 @@ const TopUp = () => {
                         theme={'solid'}
                         onClick={openTopUpLink}
                       >
-                        获取兑换码
+                        Get Redeem Code
                       </Button>
                     ) : null}
                     <Button
@@ -266,20 +266,20 @@ const TopUp = () => {
                       onClick={topUp}
                       disabled={isSubmitting}
                     >
-                      {isSubmitting ? '兑换中...' : '兑换'}
+                      {isSubmitting ? 'Exchanging...' : 'Redeem'}
                     </Button>
                   </Space>
                 </Form>
               </div>
               <div style={{ marginTop: 20 }}>
-                <Divider>在线充值</Divider>
+                <Divider>Online Top-Up</Divider>
                 <Form>
                   <Form.Input
                     disabled={!enableOnlineTopUp}
                     field={'redemptionCount'}
-                    label={'实付金额：' + renderAmount()}
+                    label={'Amount Payable:' + renderAmount()}
                     placeholder={
-                      '充值数量，最低 ' + renderQuotaWithAmount(minTopUp)
+                      'Top-Up Amount, minimum ' + renderQuotaWithAmount(minTopUp)
                     }
                     name='redemptionCount'
                     type={'number'}
@@ -300,7 +300,7 @@ const TopUp = () => {
                         preTopUp('zfb');
                       }}
                     >
-                      支付宝
+                      Alipay
                     </Button>
                     <Button
                       style={{
@@ -312,7 +312,7 @@ const TopUp = () => {
                         preTopUp('wx');
                       }}
                     >
-                      微信
+                      WeChat
                     </Button>
                   </Space>
                 </Form>
@@ -323,7 +323,7 @@ const TopUp = () => {
               {/*            async () => {*/}
               {/*                window.location.href = '/topup/history'*/}
               {/*            }*/}
-              {/*        }>充值记录</Link>*/}
+              {/*        }>Recharge Records</Link>*/}
               {/*    </Text>*/}
               {/*</div>*/}
             </Card>

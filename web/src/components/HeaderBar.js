@@ -22,18 +22,18 @@ import { stringToColor } from '../helpers/render';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
 
 // HeaderBar Buttons
-let headerButtons = [
-  {
-    text: '关于',
-    itemKey: 'about',
-    to: '/about',
-    icon: <IconHelpCircle />,
-  },
-];
+// let headerButtons = [
+//   {
+//     text: 'About',
+//     itemKey: 'about',
+//     to: '/about',
+//     icon: <IconHelpCircle />,
+//   },
+// ];
 
 let buttons = [
   {
-    text: '首页',
+    text: 'Home',
     itemKey: 'home',
     to: '/',
     // icon: <IconHomeStroked />,
@@ -48,7 +48,7 @@ let buttons = [
 
 if (localStorage.getItem('chat_link')) {
   headerButtons.splice(1, 0, {
-    name: '聊天',
+    name: 'Chat',
     to: '/chat',
     icon: 'comments',
   });
@@ -72,7 +72,7 @@ const HeaderBar = () => {
   async function logout() {
     setShowSidebar(false);
     await API.get('/api/user/logout');
-    showSuccess('注销成功!');
+    showSuccess('Logout succeeded!');
     userDispatch({ type: 'logout' });
     localStorage.removeItem('user');
     navigate('/login');
@@ -177,7 +177,7 @@ const HeaderBar = () => {
                       position='bottomRight'
                       render={
                         <Dropdown.Menu>
-                          <Dropdown.Item onClick={logout}>退出</Dropdown.Item>
+                          <Dropdown.Item onClick={logout}>Logout</Dropdown.Item>
                         </Dropdown.Menu>
                       }
                     >
@@ -195,12 +195,12 @@ const HeaderBar = () => {
                   <>
                     <Nav.Item
                       itemKey={'login'}
-                      text={'登录'}
+                      text={'Login'}
                       // icon={<IconKey />}
                     />
                     <Nav.Item
                       itemKey={'register'}
-                      text={'注册'}
+                      text={'Register'}
                       icon={<IconUser />}
                     />
                   </>

@@ -42,7 +42,7 @@ const ChatPage = () => {
       <Layout>
         <Layout.Header>
           <Banner
-              description={"正在跳转......"}
+              description={"Redirecting......"}
               type={"warning"}
           />
         </Layout.Header>

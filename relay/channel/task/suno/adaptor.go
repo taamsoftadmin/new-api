@@ -139,7 +139,7 @@ func (a *TaskAdaptor) FetchTask(baseUrl, key string, body map[string]any) (*http
 		return nil, err
 	}
 	defer req.Body.Close()
-	// 设置超时时间
+	// Settings超时Time
 	timeout := time.Second * 15
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()

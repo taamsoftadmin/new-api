@@ -73,20 +73,20 @@ const SiderBar = () => {
         icon: <IconCommentStroked />,
       },
       {
-        text: '模型价格',
+        text: 'Model price ',
         itemKey: 'pricing',
         to: '/pricing',
         icon: <IconPriceTag />,
       },
       {
-        text: '渠道',
+        text: 'Channel',
         itemKey: 'channel',
         to: '/channel',
         icon: <IconLayers />,
         className: isAdmin() ? 'semi-navigation-item-normal' : 'tableHiddle',
       },
       {
-        text: '聊天',
+        text: 'Chat',
         itemKey: 'chat',
         // to: '/chat',
         items: chatItems,
@@ -96,39 +96,39 @@ const SiderBar = () => {
         //   : 'tableHiddle',
       },
       {
-        text: '令牌',
+        text: 'Token',
         itemKey: 'token',
         to: '/token',
         icon: <IconKey />,
       },
       {
-        text: '兑换码',
+        text: 'Redeem Code',
         itemKey: 'redemption',
         to: '/redemption',
         icon: <IconGift />,
         className: isAdmin() ? 'semi-navigation-item-normal' : 'tableHiddle',
       },
       {
-        text: '钱包',
+        text: ' wallet ',
         itemKey: 'topup',
         to: '/topup',
         icon: <IconCreditCard />,
       },
       {
-        text: '用户管理',
+        text: 'UserManagement',
         itemKey: 'user',
         to: '/user',
         icon: <IconUser />,
         className: isAdmin() ? 'semi-navigation-item-normal' : 'tableHiddle',
       },
       {
-        text: '日志',
+        text: 'Log',
         itemKey: 'log',
         to: '/log',
         icon: <IconHistogram />,
       },
       {
-        text: '数据看板',
+        text: 'Data Dashboard',
         itemKey: 'detail',
         to: '/detail',
         icon: <IconCalendarClock />,
@@ -138,7 +138,7 @@ const SiderBar = () => {
             : 'tableHiddle',
       },
       {
-        text: '绘图',
+        text: 'Drawing',
         itemKey: 'midjourney',
         to: '/midjourney',
         icon: <IconImage />,
@@ -148,7 +148,7 @@ const SiderBar = () => {
             : 'tableHiddle',
       },
       {
-        text: '异步任务',
+        text: ' Asynchronous tasks ',
         itemKey: 'task',
         to: '/task',
         icon: <IconChecklistStroked />,
@@ -158,13 +158,13 @@ const SiderBar = () => {
                 : 'tableHiddle',
       },
       {
-        text: '设置',
+        text: 'Settings',
         itemKey: 'setting',
         to: '/setting',
         icon: <IconSetting />,
       },
       // {
-      //     text: '关于',
+      //     text: 'About',
       //     itemKey: 'about',
       //     to: '/about',
       //     icon: <IconAt/>
@@ -189,7 +189,7 @@ const SiderBar = () => {
       statusDispatch({ type: 'set', payload: data });
       setStatusData(data);
     } else {
-      showError('无法正常连接至服务器！');
+      showError('Unable to connect to the server normally！');
     }
   };
 
@@ -228,7 +228,7 @@ const SiderBar = () => {
                 }
             } catch (e) {
                 console.error(e);
-                showError('聊天数据解析失败')
+                showError('Chat Date解析Failure')
             }
         }
     }

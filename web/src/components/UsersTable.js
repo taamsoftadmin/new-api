@@ -17,23 +17,23 @@ import EditUser from '../pages/User/EditUser';
 function renderRole(role) {
   switch (role) {
     case 1:
-      return <Tag size='large'>普通用户</Tag>;
+      return <Tag size='large'>Regular User</Tag>;
     case 10:
       return (
         <Tag color='yellow' size='large'>
-          管理员
+          Admin
         </Tag>
       );
     case 100:
       return (
         <Tag color='orange' size='large'>
-          超级管理员
+          Super Admin
         </Tag>
       );
     default:
       return (
         <Tag color='red' size='large'>
-          未知身份
+          Unknown Identity
         </Tag>
       );
   }
@@ -46,29 +46,29 @@ const UsersTable = () => {
       dataIndex: 'id',
     },
     {
-      title: '用户名',
+      title: 'username',
       dataIndex: 'username',
     },
     {
-      title: '分组',
+      title: 'Group',
       dataIndex: 'group',
       render: (text, record, index) => {
         return <div>{renderGroup(text)}</div>;
       },
     },
     {
-      title: '统计信息',
+      title: 'Statistics',
       dataIndex: 'info',
       render: (text, record, index) => {
         return (
           <div>
             <Space spacing={1}>
-              <Tooltip content={'剩余额度'}>
+              <Tooltip content={'Remaining quota'}>
                 <Tag color='white' size='large'>
                   {renderQuota(record.quota)}
                 </Tag>
               </Tooltip>
-              <Tooltip content={'已用额度'}>
+              <Tooltip content={'Quota used'}>
                 <Tag color='white' size='large'>
                   {renderQuota(record.used_quota)}
                 </Tag>
@@ -84,7 +84,7 @@ const UsersTable = () => {
       },
     },
     {
-      title: '邀请信息',
+      title: 'Invite Information',
       dataIndex: 'invite',
       render: (text, record, index) => {
         return (
@@ -103,7 +103,7 @@ const UsersTable = () => {
               <Tooltip content={'邀请人ID'}>
                 {record.inviter_id === 0 ? (
                   <Tag color='white' size='large'>
-                    无
+                    None
                   </Tag>
                 ) : (
                   <Tag color='white' size='large'>
@@ -117,20 +117,20 @@ const UsersTable = () => {
       },
     },
     {
-      title: '角色',
+      title: 'Role',
       dataIndex: 'role',
       render: (text, record, index) => {
         return <div>{renderRole(text)}</div>;
       },
     },
     {
-      title: '状态',
+      title: 'Status',
       dataIndex: 'status',
       render: (text, record, index) => {
         return (
           <div>
             {record.DeletedAt !== null ? (
-              <Tag color='red'>已注销</Tag>
+              <Tag color='red'>已Logout</Tag>
             ) : (
               renderStatus(text)
             )}
@@ -148,18 +148,18 @@ const UsersTable = () => {
           ) : (
             <>
               <Popconfirm
-                title='确定？'
+                title='confirm？'
                 okType={'warning'}
                 onConfirm={() => {
                   manageUser(record.id, 'promote', record);
                 }}
               >
                 <Button theme='light' type='warning' style={{ marginRight: 1 }}>
-                  提升
+                  Promote
                 </Button>
               </Popconfirm>
               <Popconfirm
-                title='确定？'
+                title='confirm？'
                 okType={'warning'}
                 onConfirm={() => {
                   manageUser(record.id, 'demote', record);
@@ -170,7 +170,7 @@ const UsersTable = () => {
                   type='secondary'
                   style={{ marginRight: 1 }}
                 >
-                  降级
+                  Demote
                 </Button>
               </Popconfirm>
               {record.status === 1 ? (
@@ -182,7 +182,7 @@ const UsersTable = () => {
                     manageUser(record.id, 'disable', record);
                   }}
                 >
-                  禁用
+                  Disable
                 </Button>
               ) : (
                 <Button
@@ -194,7 +194,7 @@ const UsersTable = () => {
                   }}
                   disabled={record.status === 3}
                 >
-                  启用
+                  Enable
                 </Button>
               )}
               <Button
@@ -206,11 +206,11 @@ const UsersTable = () => {
                   setShowEditUser(true);
                 }}
               >
-                编辑
+                Edit
               </Button>
               <Popconfirm
-                title='确定是否要注销此用户？'
-                content='相当于删除用户，此修改将不可逆'
+                title='confirm是否要Logout此User？'
+                content='相当于Delete User，This modification cannot be undone.'
                 okType={'danger'}
                 position={'left'}
                 onConfirm={() => {
@@ -220,7 +220,7 @@ const UsersTable = () => {
                 }}
               >
                 <Button theme='light' type='danger' style={{ marginRight: 1 }}>
-                  注销
+                  Logout
                 </Button>
               </Popconfirm>
             </>
@@ -310,7 +310,7 @@ const UsersTable = () => {
     });
     const { success, message } = res.data;
     if (success) {
-      showSuccess('操作成功完成！');
+      showSuccess('Operation completed successfully!');
       let user = res.data.data;
       let newUsers = [...users];
       if (action === 'delete') {
@@ -327,17 +327,17 @@ const UsersTable = () => {
   const renderStatus = (status) => {
     switch (status) {
       case 1:
-        return <Tag size='large'>已激活</Tag>;
+        return <Tag size='large'>Activated</Tag>;
       case 2:
         return (
           <Tag size='large' color='red'>
-            已封禁
+            Banned
           </Tag>
         );
       default:
         return (
           <Tag size='large' color='grey'>
-            未知状态
+            Unknown status
           </Tag>
         );
     }
@@ -453,18 +453,18 @@ const UsersTable = () => {
         <div style={{ display: 'flex' }}>
           <Space>
           <Form.Input
-            label='搜索关键字'
+            label='Search Keyword'
             icon='search'
             field='keyword'
             iconPosition='left'
-            placeholder='搜索用户的 ID，用户名，显示名称，以及邮箱地址 ...'
+            placeholder='Search user ID, username, display name, and email address...'
             value={searchKeyword}
             loading={searching}
             onChange={(value) => handleKeywordChange(value)}
           />
           <Form.Select
             field='group'
-            label='分组'
+            label='Group'
             optionList={groupOptions}
             onChange={(value) => {
               setSearchGroup(value);
@@ -472,13 +472,13 @@ const UsersTable = () => {
             }}
           />
           <Button
-            label='查询'
+            label='Query'
             type='primary'
             htmlType='submit'
             className='btn-margin-right'
             style={{ marginRight: 8 }}
           >
-            查询
+            Query
           </Button>
           </Space>
         </div>
@@ -504,7 +504,7 @@ const UsersTable = () => {
           setShowAddUser(true);
         }}
       >
-        添加用户
+        Add User
       </Button>
     </>
   );

@@ -224,7 +224,7 @@ func RequestOpenAI2ClaudeMessage(textRequest dto.GeneralOpenAIRequest) (*ClaudeR
 						}
 						// 判断是否是url
 						if strings.HasPrefix(imageUrl.Url, "http") {
-							// 是url，获取图片的类型和base64编码的数据
+							// 是url，获取图片的Type和base64编码的 Date
 							mimeType, data, _ := service.GetImageFromUrl(imageUrl.Url)
 							claudeMediaMessage.Source.MediaType = mimeType
 							claudeMediaMessage.Source.Data = data

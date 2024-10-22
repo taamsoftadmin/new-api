@@ -28,7 +28,7 @@ export default function SettingsMagnification(props) {
       await refForm.current.validate().then(() => {
         console.log('Validation passed');
         const updateArray = compareObjects(inputs, inputsRow);
-        if (!updateArray.length) return showWarning('你似乎并没有修改什么');
+        if (!updateArray.length) return showWarning('It seems you havent modified anything');
         const requestQueue = updateArray.map((item) => {
           let value = '';
           if (typeof inputs[item.key] === 'boolean') {
@@ -48,23 +48,23 @@ export default function SettingsMagnification(props) {
               if (res.includes(undefined)) return;
             } else if (requestQueue.length > 1) {
               if (res.includes(undefined))
-                return showError('部分保存失败，请重试');
+                return showError('部分Save failed, please try again');
             }
-            showSuccess('保存成功');
+            showSuccess('Save Successful');
             props.refresh();
           })
           .catch(() => {
-            showError('保存失败，请重试');
+            showError('Save failed, please try again');
           })
           .finally(() => {
             setLoading(false);
           });
       }).catch((error) => {
         console.error('Validation failed:', error);
-        showError('请检查输入');
+        showError('Please check the input');
       });
     } catch (error) {
-      showError('请检查输入');
+      showError('Please check the input');
       console.error(error);
     }
   }
@@ -103,14 +103,14 @@ export default function SettingsMagnification(props) {
         getFormApi={(formAPI) => (refForm.current = formAPI)}
         style={{ marginBottom: 15 }}
       >
-        <Form.Section text={'倍率设置'}>
+        <Form.Section text={'Rate Settings'}>
           <Row gutter={16}>
             <Col span={16}>
               <Form.TextArea
-                label={'模型固定价格'}
-                extraText={'一次调用消耗多少刀，优先级大于模型倍率'}
+                label={'Fixed Price for Model'}
+                extraText={'Cost per call in tokens, higher priority than model ratio'}
                 placeholder={
-                  '为一个 JSON 文本，键为模型名称，值为一次调用消耗多少刀，比如 "gpt-4-gizmo-*": 0.1，一次消耗0.1刀'
+                  'Enter a JSON object where the key is the model name and the value is the cost per call in tokens, e.g., "gpt-4-gizmo-*": 0.1 for a cost of 0.1 tokens per call'
                 }
                 field={'ModelPrice'}
                 autosize={{ minRows: 6, maxRows: 12 }}
@@ -121,7 +121,7 @@ export default function SettingsMagnification(props) {
                     validator: (rule, value) => {
                       return verifyJSON(value);
                     },
-                    message: '不是合法的 JSON 字符串'
+                    message: 'Not a valid JSON string'
                   }
                 ]}
                 onChange={(value) =>
@@ -136,9 +136,9 @@ export default function SettingsMagnification(props) {
           <Row gutter={16}>
             <Col span={16}>
               <Form.TextArea
-                label={'模型倍率'}
+                label={'Model rate'}
                 extraText={''}
-                placeholder={'为一个 JSON 文本，键为模型名称，值为倍率'}
+                placeholder={'Is a JSON text，Key is model name，Value is the rate'}
                 field={'ModelRatio'}
                 autosize={{ minRows: 6, maxRows: 12 }}
                 trigger='blur'
@@ -148,7 +148,7 @@ export default function SettingsMagnification(props) {
                     validator: (rule, value) => {
                       return verifyJSON(value);
                     },
-                    message: '不是合法的 JSON 字符串'
+                    message: 'Not a valid JSON string'
                   }
                 ]}
                 onChange={(value) =>
@@ -163,9 +163,9 @@ export default function SettingsMagnification(props) {
           <Row gutter={16}>
             <Col span={16}>
               <Form.TextArea
-                label={'模型补全倍率（仅对自定义模型有效）'}
-                extraText={'仅对自定义模型有效'}
-                placeholder={'为一个 JSON 文本，键为模型名称，值为倍率'}
+                label={'Completion Ratio for Models (only effective for custom models)'}
+                extraText={'仅对CustomModel有效'}
+                placeholder={'Is a JSON text，Key is model name，Value is the rate'}
                 field={'CompletionRatio'}
                 autosize={{ minRows: 6, maxRows: 12 }}
                 trigger='blur'
@@ -175,7 +175,7 @@ export default function SettingsMagnification(props) {
                     validator: (rule, value) => {
                       return verifyJSON(value);
                     },
-                    message: '不是合法的 JSON 字符串'
+                    message: 'Not a valid JSON string'
                   }
                 ]}
                 onChange={(value) =>
@@ -190,9 +190,9 @@ export default function SettingsMagnification(props) {
           <Row gutter={16}>
             <Col span={16}>
               <Form.TextArea
-                label={'分组倍率'}
+                label={'Group rate'}
                 extraText={''}
-                placeholder={'为一个 JSON 文本，键为分组名称，值为倍率'}
+                placeholder={'Is a JSON text，Key is group name，Value is the rate'}
                 field={'GroupRatio'}
                 autosize={{ minRows: 6, maxRows: 12 }}
                 trigger='blur'
@@ -202,7 +202,7 @@ export default function SettingsMagnification(props) {
                     validator: (rule, value) => {
                       return verifyJSON(value);
                     },
-                    message: '不是合法的 JSON 字符串'
+                    message: 'Not a valid JSON string'
                   }
                 ]}
                 onChange={(value) =>
@@ -217,9 +217,9 @@ export default function SettingsMagnification(props) {
           <Row gutter={16}>
             <Col span={16}>
               <Form.TextArea
-                  label={'用户可选分组'}
+                  label={'User Usable Groups'}
                   extraText={''}
-                  placeholder={'为一个 JSON 文本，键为分组名称，值为倍率'}
+                  placeholder={'Is a JSON text，Key is group name，Value is the rate'}
                   field={'UserUsableGroups'}
                   autosize={{ minRows: 6, maxRows: 12 }}
                   trigger='blur'
@@ -229,7 +229,7 @@ export default function SettingsMagnification(props) {
                       validator: (rule, value) => {
                         return verifyJSON(value);
                       },
-                      message: '不是合法的 JSON 字符串'
+                      message: 'Not a valid JSON string'
                     }
                   ]}
                   onChange={(value) =>
@@ -245,11 +245,11 @@ export default function SettingsMagnification(props) {
       </Form>
       <Space>
         <Button onClick={onSubmit}>
-          保存倍率设置
+          Save Rate Settings
         </Button>
         <Popconfirm
-          title='确定重置模型倍率吗？'
-          content='此修改将不可逆'
+          title='Are you sure you want to reset the model ratio?'
+          content='This modification cannot be undone.'
           okType={'danger'}
           position={'top'}
           onConfirm={() => {
@@ -257,7 +257,7 @@ export default function SettingsMagnification(props) {
           }}
         >
           <Button type={'danger'}>
-            重置模型倍率
+            重置Model rate
           </Button>
         </Popconfirm>
       </Space>

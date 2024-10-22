@@ -46,7 +46,7 @@ function renderType(type) {
     for (let i = 0; i < CHANNEL_OPTIONS.length; i++) {
       type2label[CHANNEL_OPTIONS[i].value] = CHANNEL_OPTIONS[i];
     }
-    type2label[0] = { value: 0, text: '未知类型', color: 'grey' };
+    type2label[0] = { value: 0, text: 'Unknown type', color: 'grey' };
   }
   return (
     <Tag size='large' color={type2label[type]?.color}>
@@ -67,11 +67,11 @@ const ChannelsTable = () => {
       dataIndex: 'id',
     },
     {
-      title: '名称',
+      title: 'Name',
       dataIndex: 'name',
     },
     {
-      title: '分组',
+      title: 'Group',
       dataIndex: 'group',
       render: (text, record, index) => {
         return (
@@ -86,14 +86,14 @@ const ChannelsTable = () => {
       },
     },
     {
-      title: '类型',
+      title: 'Type',
       dataIndex: 'type',
       render: (text, record, index) => {
         return <div>{renderType(text)}</div>;
       },
     },
     {
-      title: '状态',
+      title: 'Status',
       dataIndex: 'status',
       render: (text, record, index) => {
         if (text === 3) {
@@ -105,7 +105,7 @@ const ChannelsTable = () => {
           let time = otherInfo['status_time'];
           return (
             <div>
-              <Tooltip content={'原因：' + reason + '，时间：' + timestamp2string(time)}>
+              <Tooltip content={' reason ：' + reason + '，Time：' + timestamp2string(time)}>
                 {renderStatus(text)}
               </Tooltip>
             </div>
@@ -116,25 +116,25 @@ const ChannelsTable = () => {
       },
     },
     {
-      title: '响应时间',
+      title: 'Response time',
       dataIndex: 'response_time',
       render: (text, record, index) => {
         return <div>{renderResponseTime(text)}</div>;
       },
     },
     {
-      title: '已用/剩余',
+      title: ' Used/Remaining ',
       dataIndex: 'expired_time',
       render: (text, record, index) => {
         return (
           <div>
             <Space spacing={1}>
-              <Tooltip content={'已用额度'}>
+              <Tooltip content={'Quota used'}>
                 <Tag color='white' type='ghost' size='large'>
                   {renderQuota(record.used_quota)}
                 </Tag>
               </Tooltip>
-              <Tooltip content={'剩余额度' + record.balance + '，点击更新'}>
+              <Tooltip content={'Remaining quota' + record.balance + '，点击更新'}>
                 <Tag
                   color='white'
                   type='ghost'
@@ -152,7 +152,7 @@ const ChannelsTable = () => {
       },
     },
     {
-      title: '优先级',
+      title: ' priority ',
       dataIndex: 'priority',
       render: (text, record, index) => {
         return (
@@ -173,7 +173,7 @@ const ChannelsTable = () => {
       },
     },
     {
-      title: '权重',
+      title: ' weight ',
       dataIndex: 'weight',
       render: (text, record, index) => {
         return (
@@ -200,7 +200,7 @@ const ChannelsTable = () => {
         <div>
           <SplitButtonGroup
             style={{ marginRight: 1 }}
-            aria-label='测试操作项目组'
+            aria-label='TestOperation项目组'
           >
             <Button
               theme='light'
@@ -208,7 +208,7 @@ const ChannelsTable = () => {
                 testChannel(record, '');
               }}
             >
-              测试
+              Test
             </Button>
             <Dropdown
               trigger='click'
@@ -222,10 +222,10 @@ const ChannelsTable = () => {
               ></Button>
             </Dropdown>
           </SplitButtonGroup>
-          {/*<Button theme='light' type='primary' style={{marginRight: 1}} onClick={()=>testChannel(record)}>测试</Button>*/}
+          {/*<Button theme='light' type='primary' style={{marginRight: 1}} onClick={()=>testChannel(record)}>Test</Button>*/}
           <Popconfirm
-            title='确定是否要删除此渠道？'
-            content='此修改将不可逆'
+            title='Are you sure you want to delete this channel?'
+            content='This modification cannot be undone.'
             okType={'danger'}
             position={'left'}
             onConfirm={() => {
@@ -235,7 +235,7 @@ const ChannelsTable = () => {
             }}
           >
             <Button theme='light' type='danger' style={{ marginRight: 1 }}>
-              删除
+              Delete
             </Button>
           </Popconfirm>
           {record.status === 1 ? (
@@ -247,7 +247,7 @@ const ChannelsTable = () => {
                 manageChannel(record.id, 'disable', record);
               }}
             >
-              禁用
+              Disable
             </Button>
           ) : (
             <Button
@@ -258,7 +258,7 @@ const ChannelsTable = () => {
                 manageChannel(record.id, 'enable', record);
               }}
             >
-              启用
+              Enable
             </Button>
           )}
           <Button
@@ -270,11 +270,11 @@ const ChannelsTable = () => {
               setShowEdit(true);
             }}
           >
-            编辑
+            Edit
           </Button>
           <Popconfirm
-            title='确定是否要复制此渠道？'
-            content='复制渠道的所有信息'
+            title='Are you sure you want to copy this channel?'
+            content='Copy all information of the channel.'
             okType={'danger'}
             position={'left'}
             onConfirm={async () => {
@@ -282,7 +282,7 @@ const ChannelsTable = () => {
             }}
           >
             <Button theme='light' type='primary' style={{ marginRight: 1 }}>
-              复制
+              Copy
             </Button>
           </Popconfirm>
         </div>
@@ -328,9 +328,9 @@ const ChannelsTable = () => {
     for (let i = 0; i < channels.length; i++) {
       // if (channels[i].type === 8) {
       //   showWarning(
-      //     '检测到您使用了“自定义渠道”类型，请更换为“OpenAI”渠道类型！',
+      //     '检测到您使用了“Custom Channel”Type，请更换 for “OpenAI”ChannelType！',
       //   );
-      //   showWarning('下个版本将不再支持“自定义渠道”类型！');
+      //   showWarning('下  Version将不再 support “Custom Channel”Type！');
       // }
       channels[i].key = '' + channels[i].id;
       let test_models = [];
@@ -382,25 +382,25 @@ const ChannelsTable = () => {
       (channel) => String(channel.id) === String(id),
     );
     console.log(channelToCopy);
-    channelToCopy.name += '_复制';
+    channelToCopy.name += '_Copy';
     channelToCopy.created_time = null;
     channelToCopy.balance = 0;
     channelToCopy.used_quota = 0;
     if (!channelToCopy) {
-      showError('渠道未找到，请刷新页面后重试。');
+      showError('Channel not found, please refresh the page and try again.');
       return;
     }
     try {
       const newChannel = { ...channelToCopy, id: undefined };
       const response = await API.post('/api/channel/', newChannel);
       if (response.data.success) {
-        showSuccess('渠道复制成功');
+        showSuccess('Channel copied successfully');
         await refresh();
       } else {
         showError(response.data.message);
       }
     } catch (error) {
-      showError('渠道复制失败: ' + error.message);
+      showError('ChannelCopyFailure: ' + error.message);
     }
   };
 
@@ -459,7 +459,7 @@ const ChannelsTable = () => {
     }
     const { success, message } = res.data;
     if (success) {
-      showSuccess('操作成功完成！');
+      showSuccess('Operation completed successfully!');
       let channel = res.data.data;
       let newChannels = [...channels];
       if (action === 'delete') {
@@ -477,25 +477,25 @@ const ChannelsTable = () => {
       case 1:
         return (
           <Tag size='large' color='green'>
-            已启用
+            Enabled
           </Tag>
         );
       case 2:
         return (
           <Tag size='large' color='yellow'>
-            已禁用
+            Disabled
           </Tag>
         );
       case 3:
         return (
           <Tag size='large' color='yellow'>
-            自动禁用
+            Automatically Disabled
           </Tag>
         );
       default:
         return (
           <Tag size='large' color='grey'>
-            未知状态
+            Unknown status
           </Tag>
         );
     }
@@ -503,11 +503,11 @@ const ChannelsTable = () => {
 
   const renderResponseTime = (responseTime) => {
     let time = responseTime / 1000;
-    time = time.toFixed(2) + ' 秒';
+    time = time.toFixed(2) + ' s';
     if (responseTime === 0) {
       return (
         <Tag size='large' color='grey'>
-          未测试
+          Not tested
         </Tag>
       );
     } else if (responseTime <= 1000) {
@@ -564,7 +564,7 @@ const ChannelsTable = () => {
     if (success) {
       record.response_time = time * 1000;
       record.test_time = Date.now() / 1000;
-      showInfo(`通道 ${record.name} 测试成功，耗时 ${time.toFixed(2)} 秒。`);
+      showInfo(`Channel ${record.name} TestSuccess，耗时 ${time.toFixed(2)} s。`);
     } else {
       showError(message);
     }
@@ -574,7 +574,7 @@ const ChannelsTable = () => {
     const res = await API.get(`/api/channel/test`);
     const { success, message } = res.data;
     if (success) {
-      showInfo('已成功开始测试所有通道，请刷新页面查看结果。');
+      showInfo('已Success开始Test all channels，请Refresh页面View result 。');
     } else {
       showError(message);
     }
@@ -584,7 +584,7 @@ const ChannelsTable = () => {
     const res = await API.delete(`/api/channel/disabled`);
     const { success, message, data } = res.data;
     if (success) {
-      showSuccess(`已删除所有禁用渠道，共计 ${data} 个`);
+      showSuccess(`已Delete所有DisableChannel，共计 ${data}   `);
       await refresh();
     } else {
       showError(message);
@@ -597,7 +597,7 @@ const ChannelsTable = () => {
     if (success) {
       record.balance = balance;
       record.balance_updated_time = Date.now() / 1000;
-      showInfo(`通道 ${record.name} 余额更新成功！`);
+      showInfo(`Channel ${record.name} Balance updated successfully!`);
     } else {
       showError(message);
     }
@@ -608,7 +608,7 @@ const ChannelsTable = () => {
     const res = await API.get(`/api/channel/update_balance`);
     const { success, message } = res.data;
     if (success) {
-      showInfo('已更新完毕所有已启用通道余额！');
+      showInfo('The balance of all enabled channels has been updated!');
     } else {
       showError(message);
     }
@@ -617,7 +617,7 @@ const ChannelsTable = () => {
 
   const batchDeleteChannels = async () => {
     if (selectedChannels.length === 0) {
-      showError('请先选择要删除的通道！');
+      showError('请先 Select 要Delete的Channel！');
       return;
     }
     setLoading(true);
@@ -628,7 +628,7 @@ const ChannelsTable = () => {
     const res = await API.post(`/api/channel/batch`, { ids: ids });
     const { success, message, data } = res.data;
     if (success) {
-      showSuccess(`已删除 ${data} 个通道！`);
+      showSuccess(`已Delete ${data}   Channel！`);
       await refresh();
     } else {
       showError(message);
@@ -640,7 +640,7 @@ const ChannelsTable = () => {
     const res = await API.post(`/api/channel/fix`);
     const { success, message, data } = res.data;
     if (success) {
-      showSuccess(`已修复 ${data} 个通道！`);
+      showSuccess(`已修复 ${data}   Channel！`);
       await refresh();
     } else {
       showError(message);
@@ -724,8 +724,8 @@ const ChannelsTable = () => {
           <Space>
             <Form.Input
               field='search_keyword'
-              label='搜索渠道关键词'
-              placeholder='ID，名称和密钥 ...'
+              label=' search Channel keyword '
+              placeholder='ID，Name和Key ...'
               value={searchKeyword}
               loading={searching}
               onChange={(v) => {
@@ -734,8 +734,8 @@ const ChannelsTable = () => {
             />
             <Form.Input
               field='search_model'
-              label='模型'
-              placeholder='模型关键字'
+              label='Model'
+              placeholder='Model keyword '
               value={searchModel}
               loading={searching}
               onChange={(v) => {
@@ -744,8 +744,8 @@ const ChannelsTable = () => {
             />
             <Form.Select
               field='group'
-              label='分组'
-              optionList={[{ label: '选择分组', value: null}, ...groupOptions]}
+              label='Group'
+              optionList={[{ label: ' Select Group', value: null}, ...groupOptions]}
               initValue={null}
               onChange={(v) => {
                 setSearchGroup(v);
@@ -753,13 +753,13 @@ const ChannelsTable = () => {
               }}
             />
             <Button
-              label='查询'
+              label='Query'
               type='primary'
               htmlType='submit'
               className='btn-margin-right'
               style={{ marginRight: 8 }}
             >
-              查询
+              Query
             </Button>
           </Space>
         </div>
@@ -767,11 +767,11 @@ const ChannelsTable = () => {
       <div style={{ marginTop: 10, display: 'flex' }}>
         <Space>
           <Space>
-            <Typography.Text strong>使用ID排序</Typography.Text>
+            <Typography.Text strong>Use ID sorting</Typography.Text>
             <Switch
               checked={idSort}
-              label='使用ID排序'
-              uncheckedText='关'
+              label='Use ID sorting'
+              uncheckedText=' off '
               aria-label='是否用ID排序'
               onChange={(v) => {
                 localStorage.setItem('id-sort', v + '');
@@ -840,35 +840,35 @@ const ChannelsTable = () => {
               setShowEdit(true);
             }}
           >
-            添加渠道
+            Add channel
           </Button>
           <Popconfirm
-            title='确定？'
+            title='confirm？'
             okType={'warning'}
             onConfirm={testAllChannels}
             position={isMobile() ? 'top' : 'top'}
           >
             <Button theme='light' type='warning' style={{ marginRight: 8 }}>
-              测试所有通道
+              Test all channels
             </Button>
           </Popconfirm>
           <Popconfirm
-            title='确定？'
+            title='confirm？'
             okType={'secondary'}
             onConfirm={updateAllChannelsBalance}
           >
             <Button theme='light' type='secondary' style={{ marginRight: 8 }}>
-              更新所有已启用通道余额
+              Update the balance of all enabled channels
             </Button>
           </Popconfirm>
           <Popconfirm
-            title='确定是否要删除禁用通道？'
-            content='此修改将不可逆'
+            title='confirm是否要Delete disabled channels？'
+            content='This modification cannot be undone.'
             okType={'danger'}
             onConfirm={deleteAllDisabledChannels}
           >
             <Button theme='light' type='danger' style={{ marginRight: 8 }}>
-              删除禁用通道
+              Delete disabled channels
             </Button>
           </Popconfirm>
 
@@ -878,7 +878,7 @@ const ChannelsTable = () => {
             style={{ marginRight: 8 }}
             onClick={refresh}
           >
-            刷新
+            Refresh
           </Button>
         </Space>
         {/*<div style={{width: '100%', pointerEvents: 'none', position: 'absolute'}}>*/}
@@ -887,18 +887,18 @@ const ChannelsTable = () => {
       </div>
       <div style={{ marginTop: 20 }}>
         <Space>
-          <Typography.Text strong>开启批量删除</Typography.Text>
+          <Typography.Text strong>Enable batch deletion</Typography.Text>
           <Switch
-            label='开启批量删除'
-            uncheckedText='关'
-            aria-label='是否开启批量删除'
+            label='Enable batch deletion'
+            uncheckedText=' off '
+            aria-label='是否Enable batch deletion'
             onChange={(v) => {
               setEnableBatchDelete(v);
             }}
           ></Switch>
           <Popconfirm
-            title='确定是否要删除所选通道？'
-            content='此修改将不可逆'
+            title='Are you sure you want to delete the selected channels?'
+            content='This modification cannot be undone.'
             okType={'danger'}
             onConfirm={batchDeleteChannels}
             disabled={!enableBatchDelete}
@@ -910,18 +910,18 @@ const ChannelsTable = () => {
               type='danger'
               style={{ marginRight: 8 }}
             >
-              删除所选通道
+              Delete selected Channel
             </Button>
           </Popconfirm>
           <Popconfirm
-            title='确定是否要修复数据库一致性？'
-            content='进行该操作时，可能导致渠道访问错误，请仅在数据库出现问题时使用'
+            title='Are you sure you want to fix database consistency?'
+            content='This operation may cause access errors to the channel; please use it only when there are database issues.'
             okType={'warning'}
             onConfirm={fixChannelsAbilities}
             position={'top'}
           >
             <Button theme='light' type='secondary' style={{ marginRight: 8 }}>
-              修复数据库一致性
+              Fix database consistency
             </Button>
           </Popconfirm>
         </Space>

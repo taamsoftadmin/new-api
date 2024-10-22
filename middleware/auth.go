@@ -34,7 +34,7 @@ func authHelper(c *gin.Context, minRole int) {
 		if accessToken == "" {
 			c.JSON(http.StatusUnauthorized, gin.H{
 				"success": false,
-				"message": "无权进行此操作，未登录且未提供 access token",
+				"message": "No permission to perform this operation, not logged in and no access token provided",
 			})
 			c.Abort()
 			return
@@ -44,7 +44,7 @@ func authHelper(c *gin.Context, minRole int) {
 			if !validUserInfo(user.Username, user.Role) {
 				c.JSON(http.StatusOK, gin.H{
 					"success": false,
-					"message": "无权进行此操作，用户信息无效",
+					"message": "Unauthorized action, user information is invalid",
 				})
 				c.Abort()
 				return
@@ -58,7 +58,7 @@ func authHelper(c *gin.Context, minRole int) {
 		} else {
 			c.JSON(http.StatusOK, gin.H{
 				"success": false,
-				"message": "无权进行此操作，access token 无效",
+				"message": "No permission to perform this operation, access token is invalid",
 			})
 			c.Abort()
 			return
@@ -70,7 +70,7 @@ func authHelper(c *gin.Context, minRole int) {
 		if apiUserIdStr == "" {
 			c.JSON(http.StatusUnauthorized, gin.H{
 				"success": false,
-				"message": "无权进行此操作，请刷新页面或清空缓存后重试",
+				"message": "Unauthorized action，请Refresh页面或清空缓存后Retry",
 			})
 			c.Abort()
 			return
@@ -79,7 +79,7 @@ func authHelper(c *gin.Context, minRole int) {
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{
 				"success": false,
-				"message": "无权进行此操作，登录信息无效，请重新登录",
+				"message": "Unauthorized action, invalid login information, please log in again",
 			})
 			c.Abort()
 			return
@@ -88,7 +88,7 @@ func authHelper(c *gin.Context, minRole int) {
 		if id != apiUserId {
 			c.JSON(http.StatusUnauthorized, gin.H{
 				"success": false,
-				"message": "无权进行此操作，与登录用户不匹配，请重新登录",
+				"message": "Unauthorized action, does not match the logged-in user, please log in again",
 			})
 			c.Abort()
 			return
@@ -97,7 +97,7 @@ func authHelper(c *gin.Context, minRole int) {
 	if status.(int) == common.UserStatusDisabled {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
-			"message": "用户已被封禁",
+			"message": "User has been banned",
 		})
 		c.Abort()
 		return
@@ -105,7 +105,7 @@ func authHelper(c *gin.Context, minRole int) {
 	if role.(int) < minRole {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
-			"message": "无权进行此操作，权限不足",
+			"message": "No permission to perform this operation, insufficient permissions",
 		})
 		c.Abort()
 		return
@@ -113,7 +113,7 @@ func authHelper(c *gin.Context, minRole int) {
 	if !validUserInfo(username.(string), role.(int)) {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
-			"message": "无权进行此操作，用户信息无效",
+			"message": "Unauthorized action, user information is invalid",
 		})
 		c.Abort()
 		return
@@ -188,7 +188,7 @@ func TokenAuth() func(c *gin.Context) {
 			return
 		}
 		if !userEnabled {
-			abortWithOpenAiMessage(c, http.StatusForbidden, "用户已被封禁")
+			abortWithOpenAiMessage(c, http.StatusForbidden, "User has been banned")
 			return
 		}
 		c.Set("id", token.UserId)
@@ -210,7 +210,7 @@ func TokenAuth() func(c *gin.Context) {
 			if model.IsAdmin(token.UserId) {
 				c.Set("specific_channel_id", parts[1])
 			} else {
-				abortWithOpenAiMessage(c, http.StatusForbidden, "普通用户不支持指定渠道")
+				abortWithOpenAiMessage(c, http.StatusForbidden, "Ordinary users do not support specifying channels")
 				return
 			}
 		}

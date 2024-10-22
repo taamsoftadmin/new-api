@@ -16,7 +16,7 @@ const defaultMessage = [
     role: 'assistant',
     id: '3',
     createAt: 1715676751919,
-    content: "你好，请问有什么可以帮助您的吗？",
+    content: "cancel",
   }
 ];
 
@@ -46,7 +46,7 @@ const Playground = () => {
 
   useEffect(() => {
     if (searchParams.get('expired')) {
-      showError('未登录或登录已过期，请重新登录！');
+      showError('Not logged in or login has expired, please log in again!');
     }
     let status = localStorage.getItem('status');
     if (status) {
@@ -86,7 +86,7 @@ const Playground = () => {
       if (localGroupOptions.length > 0) {
       } else {
         localGroupOptions = [{
-          label: '用户分组',
+          label: 'user group',
           value: '',
         }];
         setGroups(localGroupOptions);
@@ -193,7 +193,7 @@ const Playground = () => {
         };
       };
 
-      // 使用更新后的消息状态调用 handleSSE
+      // 使用更新后的消息Status调用 handleSSE
       handleSSE(getPayload());
       newMessage.push({
         role: 'assistant',
@@ -242,10 +242,10 @@ const Playground = () => {
       <Layout.Sider>
         <Card style={commonOuterStyle}>
           <div style={{ marginTop: 10 }}>
-            <Typography.Text strong>分组：</Typography.Text>
+            <Typography.Text strong>Group：</Typography.Text>
           </div>
           <Select
-            placeholder={'请选择分组'}
+            placeholder={'Please select a group'}
             name='group'
             required
             selection
@@ -257,10 +257,10 @@ const Playground = () => {
             optionList={groups}
           />
           <div style={{ marginTop: 10 }}>
-            <Typography.Text strong>模型：</Typography.Text>
+            <Typography.Text strong>Model：</Typography.Text>
           </div>
           <Select
-            placeholder={'请选择模型'}
+            placeholder={'Please select a model'}
             name='model'
             required
             selection
@@ -273,7 +273,7 @@ const Playground = () => {
             optionList={models}
           />
           <div style={{ marginTop: 10 }}>
-            <Typography.Text strong>Temperature：</Typography.Text>
+            <Typography.Text strong>Temperature:</Typography.Text>
           </div>
           <Slider
             step={0.1}
@@ -285,7 +285,7 @@ const Playground = () => {
             }}
           />
           <div style={{ marginTop: 10 }}>
-            <Typography.Text strong>MaxTokens：</Typography.Text>
+            <Typography.Text strong>Max Tokens:</Typography.Text>
           </div>
           <Input
             placeholder='MaxTokens'
@@ -300,7 +300,7 @@ const Playground = () => {
           />
 
           <div style={{ marginTop: 10 }}>
-            <Typography.Text strong>System：</Typography.Text>
+            <Typography.Text strong>System:</Typography.Text>
           </div>
           <TextArea
             placeholder='System Prompt'

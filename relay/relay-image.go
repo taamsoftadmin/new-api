@@ -158,7 +158,7 @@ func ImageHelper(c *gin.Context, relayMode int) *dto.OpenAIErrorWithStatusCode {
 		relayInfo.IsStream = relayInfo.IsStream || strings.HasPrefix(resp.Header.Get("Content-Type"), "text/event-stream")
 		if resp.StatusCode != http.StatusOK {
 			openaiErr := service.RelayErrorHandler(resp)
-			// reset status code 重置状态码
+			// reset status code 重置Status码
 			service.ResetStatusCode(openaiErr, statusCodeMappingStr)
 			return openaiErr
 		}
@@ -166,7 +166,7 @@ func ImageHelper(c *gin.Context, relayMode int) *dto.OpenAIErrorWithStatusCode {
 
 	_, openaiErr := adaptor.DoResponse(c, resp, relayInfo)
 	if openaiErr != nil {
-		// reset status code 重置状态码
+		// reset status code 重置Status码
 		service.ResetStatusCode(openaiErr, statusCodeMappingStr)
 		return openaiErr
 	}

@@ -16,7 +16,7 @@ export function renderGroup(group) {
   if (group === '') {
     return (
       <Tag size='large' key='default' color='orange'>
-        用户分组
+        user group
       </Tag>
     );
   }
@@ -144,12 +144,12 @@ export function renderModelPrice(
 ) {
   // 1 ratio = $0.002 / 1K tokens
   if (modelPrice !== -1) {
-    return '模型价格：$' + modelPrice + ' * 分组倍率：' + groupRatio + ' = $' + modelPrice * groupRatio;
+    return 'Model price ：$' + modelPrice + ' * Group rate：' + groupRatio + ' = $' + modelPrice * groupRatio;
   } else {
     if (completionRatio === undefined) {
       completionRatio = 0;
     }
-    // 这里的 *2 是因为 1倍率=0.002刀，请勿删除
+    // 这里的 *2 是因 for  1 magnification =0.002刀，请勿Delete
     let inputRatioPrice = modelRatio * 2.0;
     let completionRatioPrice = modelRatio * 2.0 * completionRatio;
     let price =
@@ -158,15 +158,15 @@ export function renderModelPrice(
     return (
       <>
         <article>
-          <p>提示：${inputRatioPrice} * {groupRatio} = ${inputRatioPrice * groupRatio} / 1M tokens</p>
-          <p>补全：${completionRatioPrice} * {groupRatio} = ${completionRatioPrice * groupRatio} / 1M tokens</p>
+          <p>Prompt：${inputRatioPrice} * {groupRatio} = ${inputRatioPrice * groupRatio} / 1M tokens</p>
+          <p>Completion：${completionRatioPrice} * {groupRatio} = ${completionRatioPrice * groupRatio} / 1M tokens</p>
           <p></p>
           <p>
-            提示 {inputTokens} tokens / 1M tokens * ${inputRatioPrice} + 补全{' '}
-            {completionTokens} tokens / 1M tokens * ${completionRatioPrice} * 分组 {groupRatio} =
+            Prompt {inputTokens} tokens / 1M tokens * ${inputRatioPrice} + Completion{' '}
+            {completionTokens} tokens / 1M tokens * ${completionRatioPrice} * Group {groupRatio} =
             ${price.toFixed(6)}
           </p>
-          <p>仅供参考，以实际扣费为准</p>
+          <p>仅供参考，以实际扣费 for 准</p>
         </article>
       </>
     );
@@ -177,7 +177,7 @@ export function renderQuotaWithPrompt(quota, digits) {
   let displayInCurrency = localStorage.getItem('display_in_currency');
   displayInCurrency = displayInCurrency === 'true';
   if (displayInCurrency) {
-    return `（等价金额：${renderQuota(quota, digits)}）`;
+    return `（Equivalent Amount：${renderQuota(quota, digits)}）`;
   }
   return '';
 }
@@ -211,12 +211,12 @@ export const modelColorMap = {
   'gpt-3.5-turbo-16k': 'rgb(149,252,206)', // 淡橙色
   'gpt-3.5-turbo-16k-0613': 'rgb(119,255,214)', // 淡桃色
   'gpt-3.5-turbo-instruct': 'rgb(175,238,238)', // 粉蓝色
-  'gpt-4': 'rgb(135,206,235)', // 天蓝色
+  'gpt-4': 'rgb(135,206,235)', //  d 蓝色
   // 'gpt-4-0314': 'rgb(70,130,180)', // 钢蓝色
   'gpt-4-0613': 'rgb(100,149,237)', // 矢车菊蓝
   'gpt-4-1106-preview': 'rgb(30,144,255)', // 道奇蓝
-  'gpt-4-0125-preview': 'rgb(2,177,236)', // 深天蓝
-  'gpt-4-turbo-preview': 'rgb(2,177,255)', // 深天蓝
+  'gpt-4-0125-preview': 'rgb(2,177,236)', // 深 d 蓝
+  'gpt-4-turbo-preview': 'rgb(2,177,255)', // 深 d 蓝
   'gpt-4-32k': 'rgb(104,111,238)', // 中紫色
   // 'gpt-4-32k-0314': 'rgb(90,105,205)', // 暗灰蓝色
   'gpt-4-32k-0613': 'rgb(61,71,139)', // 暗蓝灰色
@@ -227,7 +227,7 @@ export const modelColorMap = {
   'text-babbage-001': 'rgb(255,160,122)', // 浅珊瑚色
   'text-curie-001': 'rgb(219,112,147)', // 苍紫罗兰色
   // 'text-davinci-002': 'rgb(199,21,133)', // 中紫罗兰红色
-  'text-davinci-003': 'rgb(219,112,147)', // 苍紫罗兰色（与Curie相同，表示同一个系列）
+  'text-davinci-003': 'rgb(219,112,147)', // 苍紫罗兰色（与Curie相同，表示同一  系列）
   'text-davinci-edit-001': 'rgb(255,105,180)', // 热粉色
   'text-embedding-ada-002': 'rgb(255,182,193)', // 浅粉红
   'text-embedding-v1': 'rgb(255,174,185)', // 浅粉红色（略有区别）
@@ -246,12 +246,12 @@ export const modelColorMap = {
 
 export function stringToColor(str) {
   let sum = 0;
-  // 对字符串中的每个字符进行操作
+  // 对字符串中的每  字符进行Operation
   for (let i = 0; i < str.length; i++) {
     // 将字符的ASCII值加到sum中
     sum += str.charCodeAt(i);
   }
-  // 使用模运算得到个位数
+  // 使用模运算得到  位数
   let i = sum % colors.length;
   return colors[i];
 }

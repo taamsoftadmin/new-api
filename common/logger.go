@@ -94,13 +94,13 @@ func FatalLog(v ...any) {
 
 func LogQuota(quota int) string {
 	if DisplayInCurrencyEnabled {
-		return fmt.Sprintf("＄%.6f 额度", float64(quota)/QuotaPerUnit)
+		return fmt.Sprintf("＄%.6f quota", float64(quota)/QuotaPerUnit)
 	} else {
-		return fmt.Sprintf("%d 点额度", quota)
+		return fmt.Sprintf("%d point quota", quota)
 	}
 }
 
-// LogJson 仅供测试使用 only for test
+// LogJson 仅供Test使用 only for test
 func LogJson(ctx context.Context, msg string, obj any) {
 	jsonStr, err := json.Marshal(obj)
 	if err != nil {

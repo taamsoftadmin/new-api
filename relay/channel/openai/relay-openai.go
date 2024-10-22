@@ -109,7 +109,7 @@ func OaiStreamHandler(c *gin.Context, resp *http.Response, info *relaycommon.Rel
 		var streamResponses []dto.ChatCompletionsStreamResponse
 		err := json.Unmarshal(common.StringToByteSlice(streamResp), &streamResponses)
 		if err != nil {
-			// 一次性解析失败，逐个解析
+			// 一次性解析Failure，逐  解析
 			common.SysError("error unmarshalling stream response: " + err.Error())
 			for _, item := range streamItems {
 				var streamResponse dto.ChatCompletionsStreamResponse
@@ -156,7 +156,7 @@ func OaiStreamHandler(c *gin.Context, resp *http.Response, info *relaycommon.Rel
 		var streamResponses []dto.CompletionsStreamResponse
 		err := json.Unmarshal(common.StringToByteSlice(streamResp), &streamResponses)
 		if err != nil {
-			// 一次性解析失败，逐个解析
+			// 一次性解析Failure，逐  解析
 			common.SysError("error unmarshalling stream response: " + err.Error())
 			for _, item := range streamItems {
 				var streamResponse dto.CompletionsStreamResponse

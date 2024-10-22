@@ -128,7 +128,7 @@ func AudioHelper(c *gin.Context) *dto.OpenAIErrorWithStatusCode {
 		if resp.StatusCode != http.StatusOK {
 			returnPreConsumedQuota(c, relayInfo, userQuota, preConsumedQuota)
 			openaiErr := service.RelayErrorHandler(resp)
-			// reset status code 重置状态码
+			// reset status code 重置Status码
 			service.ResetStatusCode(openaiErr, statusCodeMappingStr)
 			return openaiErr
 		}
@@ -137,7 +137,7 @@ func AudioHelper(c *gin.Context) *dto.OpenAIErrorWithStatusCode {
 	usage, openaiErr := adaptor.DoResponse(c, resp, relayInfo)
 	if openaiErr != nil {
 		returnPreConsumedQuota(c, relayInfo, userQuota, preConsumedQuota)
-		// reset status code 重置状态码
+		// reset status code 重置Status码
 		service.ResetStatusCode(openaiErr, statusCodeMappingStr)
 		return openaiErr
 	}

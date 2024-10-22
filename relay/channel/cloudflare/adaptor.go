@@ -66,7 +66,7 @@ func (a *Adaptor) ConvertAudioRequest(c *gin.Context, info *relaycommon.RelayInf
 	// 打开临时文件用于保存上传的文件内容
 	requestBody := &bytes.Buffer{}
 
-	// 将上传的文件内容复制到临时文件
+	// 将上传的文件内容Copy到临时文件
 	if _, err := io.Copy(requestBody, file); err != nil {
 		return nil, err
 	}

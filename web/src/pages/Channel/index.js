@@ -6,7 +6,7 @@ const File = () => (
   <>
     <Layout>
       <Layout.Header>
-        <h3>管理渠道</h3>
+        <h3>Manage Channels</h3>
       </Layout.Header>
       <Layout.Content>
         <ChannelsTable />

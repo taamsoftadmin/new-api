@@ -23,7 +23,7 @@ export default function SettingsDrawing(props) {
 
   function onSubmit() {
     const updateArray = compareObjects(inputs, inputsRow);
-    if (!updateArray.length) return showWarning('你似乎并没有修改什么');
+    if (!updateArray.length) return showWarning('It seems you havent modified anything');
     const requestQueue = updateArray.map((item) => {
       let value = '';
       if (typeof inputs[item.key] === 'boolean') {
@@ -42,13 +42,13 @@ export default function SettingsDrawing(props) {
         if (requestQueue.length === 1) {
           if (res.includes(undefined)) return;
         } else if (requestQueue.length > 1) {
-          if (res.includes(undefined)) return showError('部分保存失败，请重试');
+          if (res.includes(undefined)) return showError('部分Save failed, please try again');
         }
-        showSuccess('保存成功');
+        showSuccess('Save Successful');
         props.refresh();
       })
       .catch(() => {
-        showError('保存失败，请重试');
+        showError('Save failed, please try again');
       })
       .finally(() => {
         setLoading(false);
@@ -75,12 +75,12 @@ export default function SettingsDrawing(props) {
           getFormApi={(formAPI) => (refForm.current = formAPI)}
           style={{ marginBottom: 15 }}
         >
-          <Form.Section text={'绘图设置'}>
+          <Form.Section text={'Drawing Settings'}>
             <Row gutter={16}>
               <Col span={8}>
                 <Form.Switch
                   field={'DrawingEnabled'}
-                  label={'启用绘图功能'}
+                  label={'Enable Drawing Functionality'}
                   size='large'
                   checkedText='｜'
                   uncheckedText='〇'
@@ -95,7 +95,7 @@ export default function SettingsDrawing(props) {
               <Col span={8}>
                 <Form.Switch
                   field={'MjNotifyEnabled'}
-                  label={'允许回调（会泄露服务器 IP 地址）'}
+                  label={'Allow Callback (will expose server IP address)'}
                   size='large'
                   checkedText='｜'
                   uncheckedText='〇'
@@ -110,7 +110,7 @@ export default function SettingsDrawing(props) {
               <Col span={8}>
                 <Form.Switch
                   field={'MjAccountFilterEnabled'}
-                  label={'允许 AccountFilter 参数'}
+                  label={'Allow Account Filter Parameter'}
                   size='large'
                   checkedText='｜'
                   uncheckedText='〇'
@@ -125,7 +125,7 @@ export default function SettingsDrawing(props) {
               <Col span={8}>
                 <Form.Switch
                   field={'MjForwardUrlEnabled'}
-                  label={'开启之后将上游地址替换为服务器地址'}
+                  label={'After enabling, upstream address will be replaced with server address'}
                   size='large'
                   checkedText='｜'
                   uncheckedText='〇'
@@ -142,7 +142,7 @@ export default function SettingsDrawing(props) {
                   field={'MjModeClearEnabled'}
                   label={
                     <>
-                      开启之后会清除用户提示词中的 <Tag>--fast</Tag> 、
+                      After enabling, the following parameters will be removed from the user prompt <Tag>--fast</Tag> 、
                       <Tag>--relax</Tag> 以及 <Tag>--turbo</Tag> 参数
                     </>
                   }
@@ -162,7 +162,7 @@ export default function SettingsDrawing(props) {
                   field={'MjActionCheckSuccessEnabled'}
                   label={
                     <>
-                      检测必须等待绘图成功才能进行放大等操作
+                      Detection must wait for drawing to succeed before performing operations like upscale
                     </>
                   }
                   size='large'
@@ -179,7 +179,7 @@ export default function SettingsDrawing(props) {
             </Row>
             <Row>
               <Button size='large' onClick={onSubmit}>
-                保存绘图设置
+                Save Drawing Settings
               </Button>
             </Row>
           </Form.Section>

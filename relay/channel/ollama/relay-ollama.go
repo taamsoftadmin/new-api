@@ -100,7 +100,7 @@ func ollamaEmbeddingHandler(c *gin.Context, resp *http.Response, promptTokens in
 	// For example, Postman will report error, and we cannot check the response at all.
 	// Copy headers
 	for k, v := range resp.Header {
-		// 删除任何现有的相同头部，以防止重复添加头部
+		// Delete任何现有的相同头部，以防止重复添加头部
 		c.Writer.Header().Del(k)
 		for _, vv := range v {
 			c.Writer.Header().Add(k, vv)

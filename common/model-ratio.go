@@ -148,8 +148,8 @@ var defaultModelRatio = map[string]float64{
 	"embedding_s1_v1":                0.0715, // ¥0.001 / 1k tokens
 	"semantic_similarity_s1_v1":      0.0715, // ¥0.001 / 1k tokens
 	"hunyuan":                        7.143,  // ¥0.1 / 1k tokens  // https://cloud.tencent.com/document/product/1729/97731#e0e6be58-60c8-469f-bdeb-6c264ce3b4d0
-	// https://platform.lingyiwanwu.com/docs#-计费单元
-	// 已经按照 7.2 来换算美元价格
+	// https://platform.lingyiwanwu.com/docs#-billing单元
+	// 已经按照 7.2 来换算美元 price 
 	"yi-34b-chat-0205":       0.18,
 	"yi-34b-chat-200k":       0.864,
 	"yi-vl-plus":             0.432,
@@ -172,7 +172,7 @@ var defaultModelRatio = map[string]float64{
 	"command-r-plus-08-2024": 1.25,
 	"deepseek-chat":          0.07,
 	"deepseek-coder":         0.07,
-	// Perplexity online 模型对搜索额外收费，有需要应自行调整，此处不计入搜索费用
+	// Perplexity online Model对 search 额外收费，有需要应自行调整，此处不计入 search 费用
 	"llama-3-sonar-small-32k-chat":   0.2 / 1000 * USD,
 	"llama-3-sonar-small-32k-online": 0.2 / 1000 * USD,
 	"llama-3-sonar-large-32k-chat":   1 / 1000 * USD,
@@ -243,7 +243,7 @@ func UpdateModelPriceByJSONString(jsonStr string) error {
 	return json.Unmarshal([]byte(jsonStr), &modelPriceMap)
 }
 
-// GetModelPrice 返回模型的价格，如果模型不存在则返回-1，false
+// GetModelPrice BackModel的 price ，如果Model不存在则Back-1，false
 func GetModelPrice(name string, printErr bool) (float64, bool) {
 	GetModelPriceMap()
 	if strings.HasPrefix(name, "gpt-4-gizmo") {

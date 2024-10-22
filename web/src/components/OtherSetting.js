@@ -47,24 +47,24 @@ const OtherSetting = () => {
     setInputs((inputs) => ({ ...inputs, [name]: value }));
   };
 
-  // 通用设置
+  // General Settings
   const formAPISettingGeneral = useRef();
-  // 通用设置 - Notice
+  // General Settings - Notice
   const submitNotice = async () => {
     try {
       setLoadingInput((loadingInput) => ({ ...loadingInput, Notice: true }));
       await updateOption('Notice', inputs.Notice);
-      showSuccess('公告已更新');
+      showSuccess('Notice updated');
     } catch (error) {
-      console.error('公告更新失败', error);
-      showError('公告更新失败');
+      console.error('Notice update failed', error);
+      showError('Notice update failed');
     } finally {
       setLoadingInput((loadingInput) => ({ ...loadingInput, Notice: false }));
     }
   };
-  // 个性化设置
+  // Personalization Settings
   const formAPIPersonalization = useRef();
-  //  个性化设置 - SystemName
+  //  Personalization Settings - SystemName
   const submitSystemName = async () => {
     try {
       setLoadingInput((loadingInput) => ({
@@ -72,10 +72,10 @@ const OtherSetting = () => {
         SystemName: true,
       }));
       await updateOption('SystemName', inputs.SystemName);
-      showSuccess('系统名称已更新');
+      showSuccess('System Name updated');
     } catch (error) {
-      console.error('系统名称更新失败', error);
-      showError('系统名称更新失败');
+      console.error('System Name update failed', error);
+      showError('System Name update failed');
     } finally {
       setLoadingInput((loadingInput) => ({
         ...loadingInput,
@@ -84,20 +84,20 @@ const OtherSetting = () => {
     }
   };
 
-  // 个性化设置 - Logo
+  // Personalization Settings - Logo
   const submitLogo = async () => {
     try {
       setLoadingInput((loadingInput) => ({ ...loadingInput, Logo: true }));
       await updateOption('Logo', inputs.Logo);
-      showSuccess('Logo 已更新');
+      showSuccess('Logo updated');
     } catch (error) {
-      console.error('Logo 更新失败', error);
-      showError('Logo 更新失败');
+      console.error('Logo update failed', error);
+      showError('Logo update failed');
     } finally {
       setLoadingInput((loadingInput) => ({ ...loadingInput, Logo: false }));
     }
   };
-  // 个性化设置 - 首页内容
+  // Personalization Settings - Home Page Content
   const submitOption = async (key) => {
     try {
       setLoadingInput((loadingInput) => ({
@@ -105,10 +105,10 @@ const OtherSetting = () => {
         HomePageContent: true,
       }));
       await updateOption(key, inputs[key]);
-      showSuccess('首页内容已更新');
+      showSuccess('Home Page Content updated');
     } catch (error) {
-      console.error('首页内容更新失败', error);
-      showError('首页内容更新失败');
+      console.error('Home Page Content update failed', error);
+      showError('Home Page Content update failed');
     } finally {
       setLoadingInput((loadingInput) => ({
         ...loadingInput,
@@ -116,35 +116,35 @@ const OtherSetting = () => {
       }));
     }
   };
-  // 个性化设置 - 关于
+  // Personalization Settings - About
   const submitAbout = async () => {
     try {
       setLoadingInput((loadingInput) => ({ ...loadingInput, About: true }));
       await updateOption('About', inputs.About);
-      showSuccess('关于内容已更新');
+      showSuccess('About content updated');
     } catch (error) {
-      console.error('关于内容更新失败', error);
-      showError('关于内容更新失败');
+      console.error('About content update failed', error);
+      showError('About content update failed');
     } finally {
       setLoadingInput((loadingInput) => ({ ...loadingInput, About: false }));
     }
   };
-  // 个性化设置 - 页脚
+  // Personalization Settings - Footer
   const submitFooter = async () => {
     try {
       setLoadingInput((loadingInput) => ({ ...loadingInput, Footer: true }));
       await updateOption('Footer', inputs.Footer);
-      showSuccess('页脚内容已更新');
+      showSuccess('Footer content updated');
     } catch (error) {
-      console.error('页脚内容更新失败', error);
-      showError('页脚内容更新失败');
+      console.error('Footer content update failed', error);
+      showError('Footer content update failed');
     } finally {
       setLoadingInput((loadingInput) => ({ ...loadingInput, Footer: false }));
     }
   };
 
   const openGitHubRelease = () => {
-    window.location = 'https://github.com/songquanpeng/one-api/releases/latest';
+    window.location = '#/releases/latest';
   };
 
   const checkUpdate = async () => {
@@ -153,7 +153,7 @@ const OtherSetting = () => {
     );
     const { tag_name, body } = res.data;
     if (tag_name === process.env.REACT_APP_VERSION) {
-      showSuccess(`已是最新版本：${tag_name}`);
+      showSuccess(`Is the latest version：${tag_name}`);
     } else {
       setUpdateData({
         tag_name: tag_name,
@@ -187,36 +187,36 @@ const OtherSetting = () => {
   return (
     <Row>
       <Col span={24}>
-        {/* 通用设置 */}
+        {/* General Settings */}
         <Form
           values={inputs}
           getFormApi={(formAPI) => (formAPISettingGeneral.current = formAPI)}
           style={{ marginBottom: 15 }}
         >
-          <Form.Section text={'通用设置'}>
+          <Form.Section text={'General Settings'}>
             <Form.TextArea
-              label={'公告'}
-              placeholder={'在此输入新的公告内容，支持 Markdown & HTML 代码'}
+              label={'Announcement'}
+              placeholder={'Enter the new announcement content here, supports Markdown & HTML code'}
               field={'Notice'}
               onChange={handleInputChange}
               style={{ fontFamily: 'JetBrains Mono, Consolas' }}
               autosize={{ minRows: 6, maxRows: 12 }}
             />
             <Button onClick={submitNotice} loading={loadingInput['Notice']}>
-              设置公告
+              Set Notice
             </Button>
           </Form.Section>
         </Form>
-        {/* 个性化设置 */}
+        {/* Personalization Settings */}
         <Form
           values={inputs}
           getFormApi={(formAPI) => (formAPIPersonalization.current = formAPI)}
           style={{ marginBottom: 15 }}
         >
-          <Form.Section text={'个性化设置'}>
+          <Form.Section text={'Personalization Settings'}>
             <Form.Input
-              label={'系统名称'}
-              placeholder={'在此输入系统名称'}
+              label={'System Name'}
+              placeholder={'Enter the system name here'}
               field={'SystemName'}
               onChange={handleInputChange}
             />
@@ -224,21 +224,21 @@ const OtherSetting = () => {
               onClick={submitSystemName}
               loading={loadingInput['SystemName']}
             >
-              设置系统名称
+              Set system name
             </Button>
             <Form.Input
-              label={'Logo 图片地址'}
-              placeholder={'在此输入 Logo 图片地址'}
+              label={'Logo Image URL'}
+              placeholder={'Enter the Logo image URL here'}
               field={'Logo'}
               onChange={handleInputChange}
             />
             <Button onClick={submitLogo} loading={loadingInput['Logo']}>
-              设置 Logo
+              Set Logo
             </Button>
             <Form.TextArea
-              label={'首页内容'}
+              label={'Home Page Content'}
               placeholder={
-                '在此输入首页内容，支持 Markdown & HTML 代码，设置后首页的状态信息将不再显示。如果输入的是一个链接，则会使用该链接作为 iframe 的 src 属性，这允许你设置任意网页作为首页。'
+                'Enter the homepage content here, supports Markdown & HTML code. Once set, the status information of the homepage will not be displayed. If a link is entered, it will be used as the src attribute of the iframe, allowing you to set any webpage as the homepage.。'
               }
               field={'HomePageContent'}
               onChange={handleInputChange}
@@ -249,12 +249,12 @@ const OtherSetting = () => {
               onClick={() => submitOption('HomePageContent')}
               loading={loadingInput['HomePageContent']}
             >
-              设置首页内容
+              Set Home Page Content
             </Button>
             <Form.TextArea
-              label={'关于'}
+              label={'About'}
               placeholder={
-                '在此输入新的关于内容，支持 Markdown & HTML 代码。如果输入的是一个链接，则会使用该链接作为 iframe 的 src 属性，这允许你设置任意网页作为关于页面。'
+                'Enter new about content here, supports Markdown & HTML code. If a link is entered, it will be used as the src attribute of the iframe, allowing you to set any webpage as the about page.。'
               }
               field={'About'}
               onChange={handleInputChange}
@@ -262,26 +262,26 @@ const OtherSetting = () => {
               autosize={{ minRows: 6, maxRows: 12 }}
             />
             <Button onClick={submitAbout} loading={loadingInput['About']}>
-              设置关于
+              Set About
             </Button>
             {/*  */}
             <Banner
               fullMode={false}
               type='info'
-              description='移除 One API 的版权标识必须首先获得授权，项目维护需要花费大量精力，如果本项目对你有意义，请主动支持本项目。'
+              description='Removing the copyright notice of One API must be authorized first. Maintaining the project requires a lot of effort. If this project matters to you, please proactively support it.'
               closeIcon={null}
               style={{ marginTop: 15 }}
             />
             <Form.Input
-              label={'页脚'}
+              label={'Footer'}
               placeholder={
-                '在此输入新的页脚，留空则使用默认页脚，支持 HTML 代码'
+                'Enter the new footer here, leave blank to use the default footer, supports HTML code.'
               }
               field={'Footer'}
               onChange={handleInputChange}
             />
             <Button onClick={submitFooter} loading={loadingInput['Footer']}>
-              设置页脚
+              Set Footer
             </Button>
           </Form.Section>
         </Form>
@@ -291,16 +291,16 @@ const OtherSetting = () => {
       {/*  onOpen={() => setShowUpdateModal(true)}*/}
       {/*  open={showUpdateModal}*/}
       {/*>*/}
-      {/*  <Modal.Header>新版本：{updateData.tag_name}</Modal.Header>*/}
+      {/*  <Modal.Header>New version: {updateData.tag_name}</Modal.Header>*/}
       {/*  <Modal.Content>*/}
       {/*    <Modal.Description>*/}
       {/*      <div dangerouslySetInnerHTML={{ __html: updateData.content }}></div>*/}
       {/*    </Modal.Description>*/}
       {/*  </Modal.Content>*/}
       {/*  <Modal.Actions>*/}
-      {/*    <Button onClick={() => setShowUpdateModal(false)}>关闭</Button>*/}
+      {/*    <Button onClick={() => setShowUpdateModal(false)}>Close</Button>*/}
       {/*    <Button*/}
-      {/*      content='详情'*/}
+      {/*      content='Details'*/}
       {/*      onClick={() => {*/}
       {/*        setShowUpdateModal(false);*/}
       {/*        openGitHubRelease();*/}

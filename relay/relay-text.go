@@ -133,16 +133,16 @@ func TextHelper(c *gin.Context) *dto.OpenAIErrorWithStatusCode {
 	}
 
 	includeUsage := false
-	// 判断用户是否需要返回使用情况
+	// 判断User是否需要Back使用情况
 	if textRequest.StreamOptions != nil && textRequest.StreamOptions.IncludeUsage {
 		includeUsage = true
 	}
 
-	// 如果不支持StreamOptions，将StreamOptions设置为nil
+	// 如果Not supportedStreamOptions，将StreamOptionsSettings for nil
 	if !relayInfo.SupportStreamOptions || !textRequest.Stream {
 		textRequest.StreamOptions = nil
 	} else {
-		// 如果支持StreamOptions，且请求中没有设置StreamOptions，根据配置文件设置StreamOptions
+		// 如果 support StreamOptions，且请求中没有SettingsStreamOptions，根据 Configuration 文件SettingsStreamOptions
 		if constant.ForceStreamOption {
 			textRequest.StreamOptions = &dto.StreamOptions{
 				IncludeUsage: true,
@@ -190,7 +190,7 @@ func TextHelper(c *gin.Context) *dto.OpenAIErrorWithStatusCode {
 		if resp.StatusCode != http.StatusOK {
 			returnPreConsumedQuota(c, relayInfo, userQuota, preConsumedQuota)
 			openaiErr := service.RelayErrorHandler(resp)
-			// reset status code 重置状态码
+			// reset status code 重置Status码
 			service.ResetStatusCode(openaiErr, statusCodeMappingStr)
 			return openaiErr
 		}
@@ -199,7 +199,7 @@ func TextHelper(c *gin.Context) *dto.OpenAIErrorWithStatusCode {
 	usage, openaiErr := adaptor.DoResponse(c, resp, relayInfo)
 	if openaiErr != nil {
 		returnPreConsumedQuota(c, relayInfo, userQuota, preConsumedQuota)
-		// reset status code 重置状态码
+		// reset status code 重置Status码
 		service.ResetStatusCode(openaiErr, statusCodeMappingStr)
 		return openaiErr
 	}
@@ -242,7 +242,7 @@ func checkRequestSensitive(textRequest *dto.GeneralOpenAIRequest, info *relaycom
 	return err
 }
 
-// 预扣费并返回用户剩余配额
+// 预扣费并BackUser剩余配额
 func preConsumeQuota(c *gin.Context, preConsumedQuota int, relayInfo *relaycommon.RelayInfo) (int, int, *dto.OpenAIErrorWithStatusCode) {
 	userQuota, err := model.CacheGetUserQuota(relayInfo.UserId)
 	if err != nil {
@@ -259,12 +259,12 @@ func preConsumeQuota(c *gin.Context, preConsumedQuota int, relayInfo *relaycommo
 		return 0, 0, service.OpenAIErrorWrapperLocal(err, "decrease_user_quota_failed", http.StatusInternalServerError)
 	}
 	if userQuota > 100*preConsumedQuota {
-		// 用户额度充足，判断令牌额度是否充足
+		// UserQuota充足，判断TokenQuota是否充足
 		if !relayInfo.TokenUnlimited {
-			// 非无限令牌，判断令牌额度是否充足
+			// 非None限Token，判断TokenQuota是否充足
 			tokenQuota := c.GetInt("token_quota")
 			if tokenQuota > 100*preConsumedQuota {
-				// 令牌额度充足，信任令牌
+				// TokenQuota充足，信任Token
 				preConsumedQuota = 0
 				common.LogInfo(c, fmt.Sprintf("user %d quota %d and token %d quota %d are enough, trusted and no need to pre-consume", relayInfo.UserId, userQuota, relayInfo.TokenId, tokenQuota))
 			}
@@ -327,9 +327,9 @@ func postConsumeQuota(ctx *gin.Context, relayInfo *relaycommon.RelayInfo, modelN
 	totalTokens := promptTokens + completionTokens
 	var logContent string
 	if !usePrice {
-		logContent = fmt.Sprintf("模型倍率 %.2f，补全倍率 %.2f，分组倍率 %.2f", modelRatio, completionRatio, groupRatio)
+		logContent = fmt.Sprintf("Model rate %.2f，Completion magnification  %.2f，Group rate %.2f", modelRatio, completionRatio, groupRatio)
 	} else {
-		logContent = fmt.Sprintf("模型价格 %.2f，分组倍率 %.2f", modelPrice, groupRatio)
+		logContent = fmt.Sprintf("Model price  %.2f，Group rate %.2f", modelPrice, groupRatio)
 	}
 
 	// record all the consume log even if quota is 0
@@ -362,11 +362,11 @@ func postConsumeQuota(ctx *gin.Context, relayInfo *relaycommon.RelayInfo, modelN
 	logModel := modelName
 	if strings.HasPrefix(logModel, "gpt-4-gizmo") {
 		logModel = "gpt-4-gizmo-*"
-		logContent += fmt.Sprintf("，模型 %s", modelName)
+		logContent += fmt.Sprintf("，Model %s", modelName)
 	}
 	if strings.HasPrefix(logModel, "gpt-4o-gizmo") {
 		logModel = "gpt-4o-gizmo-*"
-		logContent += fmt.Sprintf("，模型 %s", modelName)
+		logContent += fmt.Sprintf("，Model %s", modelName)
 	}
 	if extraContent != "" {
 		logContent += ", " + extraContent

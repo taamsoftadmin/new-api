@@ -40,7 +40,7 @@ func cacheSetToken(token *Token) error {
 	return nil
 }
 
-// CacheGetTokenByKey 从缓存中获取 token 并续期时间，如果缓存中不存在，则从数据库中获取
+// CacheGetTokenByKey 从缓存中获取 token 并续期Time，如果缓存中不存在，则从 Date库中获取
 func CacheGetTokenByKey(key string) (*Token, error) {
 	if !common.RedisEnabled {
 		return GetTokenByKey(key)
@@ -48,7 +48,7 @@ func CacheGetTokenByKey(key string) (*Token, error) {
 	var token *Token
 	tokenObjectString, err := common.RedisGet(fmt.Sprintf("token:%s", key))
 	if err != nil {
-		// 如果缓存中不存在，则从数据库中获取
+		// 如果缓存中不存在，则从 Date库中获取
 		token, err = GetTokenByKey(key)
 		if err != nil {
 			return nil, err
@@ -56,7 +56,7 @@ func CacheGetTokenByKey(key string) (*Token, error) {
 		err = cacheSetToken(token)
 		return token, nil
 	}
-	// 如果缓存中存在，则续期时间
+	// 如果缓存中存在，则续期Time
 	err = common.RedisExpire(fmt.Sprintf("token:%s", key), time.Duration(TokenCacheSeconds)*time.Second)
 	err = json.Unmarshal([]byte(tokenObjectString), &token)
 	return token, err
@@ -78,7 +78,7 @@ func SyncTokenCache(frequency int) {
 		for key := range copyToken2UserId {
 			token, err := GetTokenByKey(key)
 			if err != nil {
-				// 如果数据库中不存在，则删除缓存
+				// 如果 Date库中不存在，则Delete缓存
 				common.SysError(fmt.Sprintf("failed to get token %s from database: %s", key, err.Error()))
 				//delete redis
 				err := common.RedisDel(fmt.Sprintf("token:%s", key))
@@ -86,7 +86,7 @@ func SyncTokenCache(frequency int) {
 					common.SysError(fmt.Sprintf("failed to delete token %s from redis: %s", key, err.Error()))
 				}
 			} else {
-				// 如果数据库中存在，先检查redis
+				// 如果 Date库中存在，先检查redis
 				_, err = common.RedisGet(fmt.Sprintf("token:%s", key))
 				if err != nil {
 					// 如果redis中不存在，则跳过
@@ -338,7 +338,7 @@ func CacheGetChannel(id int) (*Channel, error) {
 
 	c, ok := channelsIDM[id]
 	if !ok {
-		return nil, errors.New(fmt.Sprintf("当前渠道# %d，已不存在", id))
+		return nil, errors.New(fmt.Sprintf("The current channel #%d no longer exists.", id))
 	}
 	return c, nil
 }
