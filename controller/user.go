@@ -235,9 +235,31 @@ func Register(c *gin.Context) {
 		}
 	}
 
+	// After successfully creating the user and token, get complete user info to return
+	completeUser, err := model.GetUserById(insertedUser.Id, false)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": true,
+			"message": "Registration was successful, but obtaining user information failed",
+		})
+		return
+	}
+
+	// Generate access token if not already set
+	if completeUser.GetAccessToken() == "" {
+		randI := common.GetRandomInt(4)
+		accessToken, err := common.GenerateRandomKey(29 + randI)
+		if err == nil {
+			completeUser.SetAccessToken(accessToken)
+			completeUser.Update(false)
+		}
+	}
+
+	// Return the full user information with access token
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"message": "",
+		"data":    completeUser,
 	})
 	return
 }

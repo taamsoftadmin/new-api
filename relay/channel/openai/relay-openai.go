@@ -28,6 +28,24 @@ func sendStreamData(c *gin.Context, info *relaycommon.RelayInfo, data string, fo
 		return nil
 	}
 
+	// Save the raw streaming data for logging
+	if common.LogResponseEnabled {
+		existingData, exists := c.Get("response_body")
+		responseData := ""
+		if exists {
+			responseData = existingData.(string)
+		}
+
+		// Append new data with a reasonable limit
+		if len(responseData) < common.MaxLogRespLength*2 {
+			responseData += data + "\n"
+			if len(responseData) > common.MaxLogRespLength {
+				responseData = responseData[:common.MaxLogRespLength] + "..."
+			}
+			c.Set("response_body", responseData)
+		}
+	}
+
 	if !forceFormat && !thinkToContent {
 		return helper.StringData(c, data)
 	}
@@ -215,7 +233,7 @@ func OpenaiHandler(c *gin.Context, resp *http.Response, info *relaycommon.RelayI
 			StatusCode: resp.StatusCode,
 		}, nil
 	}
-	
+
 	forceFormat := false
 	if forceFmt, ok := info.ChannelSetting[constant.ForceFormat].(bool); ok {
 		forceFormat = forceFmt

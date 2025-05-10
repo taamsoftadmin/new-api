@@ -1,0 +1,590 @@
+{
+  "info": {
+    "_postman_id": "random-uuid",
+    "name": "Taam Cloud v2 ",
+    "description": "API collection for One API system",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "auth_token",
+      "value": "your_access_token",
+      "type": "string"
+    },
+    {
+      "key": "user_id",
+      "value": "your_user_id",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "System",
+      "item": [
+        {
+          "name": "Get Setup Status",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/setup"
+          }
+        },
+        {
+          "name": "Post Setup",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/setup",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"password123\",\n  \"confirmPassword\": \"password123\",\n  \"selfUseModeEnabled\": false,\n  \"demoSiteEnabled\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Get System Status",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/status"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/user/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"user\",\n  \"password\": \"password123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/user/register",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"newuser\",\n  \"password\": \"password123\",\n  \"email\": \"user@example.com\",\n  \"verificationCode\": \"123456\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/user/logout"
+          }
+        }
+      ]
+    },
+    {
+      "name": "User Management",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/user",
+            "query": [
+              {
+                "key": "p",
+                "value": "1"
+              },
+              {
+                "key": "page_size",
+                "value": "10"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Get Self",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/user/self"
+          }
+        },
+        {
+          "name": "Update Self",
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/api/user/self",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"updatedname\",\n  \"displayName\": \"Updated Display Name\",\n  \"password\": \"newpassword\",\n  \"originalPassword\": \"oldpassword\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Channels",
+      "item": [
+        {
+          "name": "Get All Channels",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/channel"
+          }
+        },
+        {
+          "name": "Add Channel",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/channel",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"New Channel\",\n  \"type\": 1,\n  \"key\": \"api-key\",\n  \"baseURL\": \"https://api.example.com\",\n  \"models\": [\"gpt-3.5-turbo\", \"gpt-4\"]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Logs",
+      "item": [
+        {
+          "name": "Get All Logs",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/log",
+            "query": [
+              {
+                "key": "p",
+                "value": "1"
+              },
+              {
+                "key": "page_size",
+                "value": "10"
+              },
+              {
+                "key": "type",
+                "value": "0"
+              },
+              {
+                "key": "start_timestamp",
+                "value": "1600000000"
+              },
+              {
+                "key": "end_timestamp",
+                "value": "1700000000"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Get User Logs",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/log/self",
+            "query": [
+              {
+                "key": "p",
+                "value": "1"
+              },
+              {
+                "key": "page_size",
+                "value": "10"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tokens",
+      "item": [
+        {
+          "name": "Generate Access Token",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/user/token"
+          }
+        },
+        {
+          "name": "Get All Tokens",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/token"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Midjourney",
+      "item": [
+        {
+          "name": "Get All Midjourney Tasks",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/mj",
+            "query": [
+              {
+                "key": "p",
+                "value": "0"
+              },
+              {
+                "key": "channel_id",
+                "value": "1"
+              },
+              {
+                "key": "mj_id",
+                "value": "task-id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Get User Midjourney Tasks",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/mj/self",
+            "query": [
+              {
+                "key": "p",
+                "value": "0"
+              },
+              {
+                "key": "mj_id",
+                "value": "task-id"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Payments",
+      "item": [
+        {
+          "name": "Request EPay",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/user/pay",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 100,\n  \"payment_method\": \"wxpay\",\n  \"top_up_code\": \"CODE123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Request Amount",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/user/amount",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 100,\n  \"top_up_code\": \"CODE123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Options",
+      "item": [
+        {
+          "name": "Get Options",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/option"
+          }
+        },
+        {
+          "name": "Update Option",
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/api/option"
+          }
+        },
+        {
+          "name": "Reset Model Ratio",
+          "request": {
+            "method": "POST", 
+            "url": "{{base_url}}/api/option/rest_model_ratio"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Channel Management",
+      "item": [
+        {
+          "name": "Test All Channels",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/channel/test"
+          }
+        },
+        {
+          "name": "Test Single Channel",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/channel/test/:id"
+          }
+        },
+        {
+          "name": "Update All Channels Balance",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/channel/update_balance"
+          }
+        },
+        {
+          "name": "Update Single Channel Balance",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/channel/update_balance/:id"
+          }
+        },
+        {
+          "name": "List Channel Models",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/channel/models"
+          }
+        },
+        {
+          "name": "List Enabled Models",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/channel/models_enabled"
+          }
+        }
+      ]
+    },
+    {
+      "name": "User Additional Features",
+      "item": [
+        {
+          "name": "Get User Groups",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/user/groups"
+          }
+        },
+        {
+          "name": "Get User Models",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/user/models"
+          }
+        },
+        {
+          "name": "Update User Setting",
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/api/user/setting",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notify_type\": \"email\",\n  \"quota_warning_threshold\": 0.8,\n  \"webhook_url\": \"https://example.com/webhook\",\n  \"webhook_secret\": \"secret123\",\n  \"notification_email\": \"user@example.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Redemption",
+      "item": [
+        {
+          "name": "Get All Redemptions",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/redemption"
+          }
+        },
+        {
+          "name": "Search Redemptions",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/redemption/search",
+            "query": [
+              {
+                "key": "keyword",
+                "value": "search_term"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Add Redemption",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/redemption",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Redemption Name\",\n  \"key\": \"REDEMPTION_KEY\",\n  \"status\": 1,\n  \"quota\": 1000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tasks",
+      "item": [
+        {
+          "name": "Get User Tasks",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/task/self"
+          }
+        },
+        {
+          "name": "Get All Tasks",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/task"
+          }
+        }
+      ]
+    },
+    {
+      "name": "OAuth",
+      "item": [
+        {
+          "name": "GitHub OAuth",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/oauth/github"
+          }
+        },
+        {
+          "name": "OIDC Auth",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/oauth/oidc"
+          }
+        },
+        {
+          "name": "WeChat Auth",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/oauth/wechat"
+          }
+        },
+        {
+          "name": "Telegram Login",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/oauth/telegram/login"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Data Analytics",
+      "item": [
+        {
+          "name": "Get All Quota Dates",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/data"
+          }
+        },
+        {
+          "name": "Get User Quota Dates",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/data/self"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Groups",
+      "item": [
+        {
+          "name": "Get Groups",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/group"
+          }
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "value",
+        "value": "{{auth_token}}",
+        "type": "string"
+      },
+      {
+        "key": "key",
+        "value": "Authorization",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.request.headers.add({",
+          "    key: 'New-Api-User',",
+          "    value: pm.variables.get('user_id')",
+          "});"
+        ]
+      }
+    }
+  ]
+}

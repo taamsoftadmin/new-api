@@ -244,6 +244,12 @@ const (
 
 )
 
+// Request/Response logging settings
+var LogRequestEnabled = true
+var LogResponseEnabled = true
+var MaxLogReqLength = 2048  // 2KB max for request logging
+var MaxLogRespLength = 2048 // 2KB max for response logging
+
 var ChannelBaseURLs = []string{
 	"",                                    // 0
 	"https://api.openai.com",              // 1

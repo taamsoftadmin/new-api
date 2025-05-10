@@ -1,0 +1,1040 @@
+{
+  "info": {
+    "_postman_id": "random-uuid-user-collection",
+    "name": "Taam Cloud User API",
+    "description": "User-specific API endpoints for Taam Cloud system",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "auth_token",
+      "value": "your_access_token",
+      "type": "string"
+    },
+    {
+      "key": "user_id",
+      "value": "your_user_id",
+      "type": "string"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "value",
+        "value": "{{auth_token}}",
+        "type": "string"
+      },
+      {
+        "key": "key",
+        "value": "Authorization",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.request.headers.add({",
+          "    key: 'New-Api-User',",
+          "    value: pm.variables.get('user_id')",
+          "});"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register New User",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/user/register",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"newuser123\",\n  \"password\": \"securepassword123\",\n  \"email\": \"user@example.com\",\n  \"verificationCode\": \"123456\",\n  \"affCode\": \"ABC123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Register a new user account. If email verification is enabled, both email and verification code are required."
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/user/login",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"user123\",\n  \"password\": \"password123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Authenticate user and get session information."
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/user/logout",
+            "description": "Log out the current user by clearing the session."
+          }
+        },
+        {
+          "name": "Email Verification",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/verification?email=user@example.com",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "verification"
+              ],
+              "query": [
+                {
+                  "key": "email",
+                  "value": "user@example.com"
+                }
+              ]
+            },
+            "description": "Send a verification code to the specified email address for registration or other verification purposes."
+          }
+        },
+        {
+          "name": "Password Reset Request",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/reset_password?email=user@example.com",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "reset_password"
+              ],
+              "query": [
+                {
+                  "key": "email",
+                  "value": "user@example.com"
+                }
+              ]
+            },
+            "description": "Request a password reset by sending a reset link to the specified email."
+          }
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/user/reset",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"token\": \"reset_token_from_email\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Reset user password using token received from reset password email."
+          }
+        }
+      ],
+      "description": "User authentication-related endpoints."
+    },
+    {
+      "name": "User Profile",
+      "item": [
+        {
+          "name": "Get User Profile",
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "value",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                },
+                {
+                  "key": "key",
+                  "value": "Authorization",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": "{{base_url}}/api/user/self",
+            "description": "Get the current user's profile information. Requires authentication."
+          }
+        },
+        {
+          "name": "Update User Profile",
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "value",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                },
+                {
+                  "key": "key",
+                  "value": "Authorization",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "url": "{{base_url}}/api/user/self",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"updated_username\",\n  \"displayName\": \"Updated Display Name\",\n  \"password\": \"newpassword123\",\n  \"originalPassword\": \"oldpassword123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Update the current user's profile. To update password, both new password and original password must be provided."
+          }
+        },
+        {
+          "name": "Delete User Account",
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "value",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                },
+                {
+                  "key": "key",
+                  "value": "Authorization",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "url": "{{base_url}}/api/user/self",
+            "description": "Delete the current user's account. This action cannot be undone."
+          }
+        },
+        {
+          "name": "Update User Settings",
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "value",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                },
+                {
+                  "key": "key",
+                  "value": "Authorization",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "url": "{{base_url}}/api/user/setting",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notify_type\": \"email\",\n  \"quota_warning_threshold\": 0.8,\n  \"webhook_url\": \"https://example.com/webhook\",\n  \"webhook_secret\": \"secret123\",\n  \"notification_email\": \"notifications@example.com\",\n  \"accept_unset_model_ratio_model\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Update user notification settings and preferences."
+          }
+        },
+        {
+          "name": "Get User Models",
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "value",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                },
+                {
+                  "key": "key",
+                  "value": "Authorization",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": "{{base_url}}/api/user/models",
+            "description": "Get the list of AI models available to the current user based on their group."
+          }
+        },
+        {
+          "name": "Get User Groups",
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "value",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                },
+                {
+                  "key": "key",
+                  "value": "Authorization",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": "{{base_url}}/api/user/groups",
+            "description": "Get the list of groups available to the user."
+          }
+        }
+      ],
+      "description": "User profile management endpoints."
+    },
+    {
+      "name": "Tokens & Authentication",
+      "item": [
+        {
+          "name": "Generate API Access Token",
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "value",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                },
+                {
+                  "key": "key",
+                  "value": "Authorization",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": "{{base_url}}/api/user/token",
+            "description": "Generate a new API access token for the current user."
+          }
+        },
+        {
+          "name": "Get All Tokens",
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "value",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                },
+                {
+                  "key": "key",
+                  "value": "Authorization",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": "{{base_url}}/api/token",
+            "description": "Get all API tokens belonging to the current user."
+          }
+        },
+        {
+          "name": "Search Tokens",
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "value",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                },
+                {
+                  "key": "key",
+                  "value": "Authorization",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/token/search?keyword=search_term",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "token",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "keyword",
+                  "value": "search_term"
+                }
+              ]
+            },
+            "description": "Search for tokens by name or other attributes."
+          }
+        },
+        {
+          "name": "Get Token Details",
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "value",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                },
+                {
+                  "key": "key",
+                  "value": "Authorization",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": "{{base_url}}/api/token/123",
+            "description": "Get details for a specific token by ID."
+          }
+        },
+        {
+          "name": "Create Token",
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "value",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                },
+                {
+                  "key": "key",
+                  "value": "Authorization",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "url": "{{base_url}}/api/token",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"My API Token\",\n  \"expiredTime\": -1,\n  \"remainQuota\": 500000,\n  \"unlimitedQuota\": false,\n  \"modelLimitsEnabled\": false,\n  \"modelLimits\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Create a new API token for specific purposes. An expiredTime of -1 indicates no expiration."
+          }
+        },
+        {
+          "name": "Update Token",
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "value",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                },
+                {
+                  "key": "key",
+                  "value": "Authorization",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "url": "{{base_url}}/api/token",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 123,\n  \"name\": \"Updated Token Name\",\n  \"expiredTime\": 1714344000,\n  \"remainQuota\": 1000000,\n  \"modelLimitsEnabled\": true,\n  \"modelLimits\": [\"gpt-4\", \"gpt-3.5-turbo\"]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Update an existing token's properties."
+          }
+        },
+        {
+          "name": "Delete Token",
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "value",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                },
+                {
+                  "key": "key",
+                  "value": "Authorization",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "url": "{{base_url}}/api/token/123",
+            "description": "Delete a specific token by ID."
+          }
+        }
+      ],
+      "description": "API token management endpoints."
+    },
+    {
+      "name": "Payments & Quota",
+      "item": [
+        {
+          "name": "Top Up with Redemption Code",
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "value",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                },
+                {
+                  "key": "key",
+                  "value": "Authorization",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "url": "{{base_url}}/api/user/topup",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"key\": \"REDEMPTION_CODE_123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Top up user's quota using a redemption code."
+          }
+        },
+        {
+          "name": "Request Payment",
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "value",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                },
+                {
+                  "key": "key",
+                  "value": "Authorization",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "url": "{{base_url}}/api/user/pay",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 1000,\n  \"payment_method\": \"wxpay\",\n  \"top_up_code\": \"PROMO_CODE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Request payment for credits. Payment methods include 'wxpay' for WeChat Pay and 'zfb' for Alipay."
+          }
+        },
+        {
+          "name": "Get Payment Amount",
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "value",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                },
+                {
+                  "key": "key",
+                  "value": "Authorization",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "url": "{{base_url}}/api/user/amount",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 1000,\n  \"top_up_code\": \"PROMO_CODE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Calculate the payment amount in real currency for a specified amount of quota."
+          }
+        },
+        {
+          "name": "Get Affiliate Code",
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "value",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                },
+                {
+                  "key": "key",
+                  "value": "Authorization",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": "{{base_url}}/api/user/aff",
+            "description": "Get the user's affiliate code that can be used to invite others."
+          }
+        },
+        {
+          "name": "Transfer Affiliate Quota",
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "value",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                },
+                {
+                  "key": "key",
+                  "value": "Authorization",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "url": "{{base_url}}/api/user/aff_transfer",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quota\": 5000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Transfer quota from affiliate balance to user's regular balance."
+          }
+        }
+      ],
+      "description": "Payment and quota management endpoints."
+    },
+    {
+      "name": "User Statistics & Logs",
+      "item": [
+        {
+          "name": "Get User Logs",
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "value",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                },
+                {
+                  "key": "key",
+                  "value": "Authorization",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/log/self?p=1&page_size=10&type=0&start_timestamp=1600000000&end_timestamp=1700000000",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "log",
+                "self"
+              ],
+              "query": [
+                {
+                  "key": "p",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "10"
+                },
+                {
+                  "key": "type",
+                  "value": "0"
+                },
+                {
+                  "key": "start_timestamp",
+                  "value": "1600000000"
+                },
+                {
+                  "key": "end_timestamp",
+                  "value": "1700000000"
+                }
+              ]
+            },
+            "description": "Get the current user's usage logs with pagination and filtering."
+          }
+        },
+        {
+          "name": "Get User Log Statistics",
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "value",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                },
+                {
+                  "key": "key",
+                  "value": "Authorization",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/log/self/stat?start_timestamp=1600000000&end_timestamp=1700000000",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "log",
+                "self",
+                "stat"
+              ],
+              "query": [
+                {
+                  "key": "start_timestamp",
+                  "value": "1600000000"
+                },
+                {
+                  "key": "end_timestamp",
+                  "value": "1700000000"
+                }
+              ]
+            },
+            "description": "Get usage statistics for the current user within a specified time range."
+          }
+        },
+        {
+          "name": "Search User Logs",
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "value",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                },
+                {
+                  "key": "key",
+                  "value": "Authorization",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/log/self/search?keyword=search_term",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "log",
+                "self",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "keyword",
+                  "value": "search_term"
+                }
+              ]
+            },
+            "description": "Search through the current user's logs for specific keywords."
+          }
+        },
+        {
+          "name": "Get User Quota Data",
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "value",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                },
+                {
+                  "key": "key",
+                  "value": "Authorization",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/data/self?start_timestamp=1600000000&end_timestamp=1700000000",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "data",
+                "self"
+              ],
+              "query": [
+                {
+                  "key": "start_timestamp",
+                  "value": "1600000000"
+                },
+                {
+                  "key": "end_timestamp",
+                  "value": "1700000000"
+                }
+              ]
+            },
+            "description": "Get quota usage data for analytics and reporting purposes."
+          }
+        }
+      ],
+      "description": "User statistics and log endpoints."
+    },
+    {
+      "name": "OAuth & Social Login",
+      "item": [
+        {
+          "name": "Generate OAuth State Code",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/oauth/state",
+            "description": "Generate a state code for OAuth authorization flow."
+          }
+        },
+        {
+          "name": "GitHub OAuth",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/oauth/github",
+            "description": "Authenticate or register using GitHub."
+          }
+        },
+        {
+          "name": "OIDC Auth",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/oauth/oidc",
+            "description": "Authenticate using OpenID Connect."
+          }
+        },
+        {
+          "name": "LinuxDO OAuth",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/oauth/linuxdo",
+            "description": "Authenticate using LinuxDO."
+          }
+        },
+        {
+          "name": "WeChat Auth",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/oauth/wechat",
+            "description": "Authenticate using WeChat."
+          }
+        },
+        {
+          "name": "WeChat Bind",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/oauth/wechat/bind",
+            "description": "Bind a WeChat account to the current user."
+          }
+        },
+        {
+          "name": "Email Bind",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/oauth/email/bind?email=user@example.com&code=123456",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "oauth",
+                "email",
+                "bind"
+              ],
+              "query": [
+                {
+                  "key": "email",
+                  "value": "user@example.com"
+                },
+                {
+                  "key": "code",
+                  "value": "123456"
+                }
+              ]
+            },
+            "description": "Bind an email address to the current user account."
+          }
+        },
+        {
+          "name": "Telegram Login",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/oauth/telegram/login",
+            "description": "Authenticate using Telegram."
+          }
+        },
+        {
+          "name": "Telegram Bind",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/oauth/telegram/bind",
+            "description": "Bind a Telegram account to the current user."
+          }
+        }
+      ],
+      "description": "OAuth and social login/binding endpoints."
+    }
+  ]
+}

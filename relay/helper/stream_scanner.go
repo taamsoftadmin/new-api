@@ -39,11 +39,13 @@ func StreamScannerHandler(c *gin.Context, resp *http.Response, info *relaycommon
 	}
 
 	var (
-		stopChan   = make(chan bool, 2)
-		scanner    = bufio.NewScanner(resp.Body)
-		ticker     = time.NewTicker(streamingTimeout)
-		pingTicker *time.Ticker
-		writeMutex sync.Mutex // Mutex to protect concurrent writes
+		stopChan          = make(chan bool, 2)
+		scanner           = bufio.NewScanner(resp.Body)
+		ticker            = time.NewTicker(streamingTimeout)
+		pingTicker        *time.Ticker
+		writeMutex        sync.Mutex // Mutex to protect concurrent writes
+		responseCollector = &strings.Builder{}
+		maxResponseSize   = common.MaxLogRespLength
 	)
 
 	generalSettings := operation_setting.GetGeneralSetting()
@@ -63,6 +65,16 @@ func StreamScannerHandler(c *gin.Context, resp *http.Response, info *relaycommon
 			pingTicker.Stop()
 		}
 		close(stopChan)
+
+		// Store the collected response for logging
+		if common.LogResponseEnabled && responseCollector.Len() > 0 {
+			responseData := responseCollector.String()
+			// Truncate if needed
+			if len(responseData) > maxResponseSize {
+				responseData = responseData[:maxResponseSize] + "..."
+			}
+			c.Set("response_body", responseData)
+		}
 	}()
 	scanner.Buffer(make([]byte, InitialScannerBufferSize), MaxScannerBufferSize)
 	scanner.Split(bufio.ScanLines)
@@ -117,6 +129,13 @@ func StreamScannerHandler(c *gin.Context, resp *http.Response, info *relaycommon
 			data = data[5:]
 			data = strings.TrimLeft(data, " ")
 			data = strings.TrimSuffix(data, "\r")
+
+			// For logging - collect the data, but limit to prevent memory overflow
+			if common.LogResponseEnabled && responseCollector.Len() < maxResponseSize*2 {
+				responseCollector.WriteString(data)
+				responseCollector.WriteString("\n")
+			}
+
 			if !strings.HasPrefix(data, "[DONE]") {
 				info.SetFirstResponseTime()
 				writeMutex.Lock() // Lock before writing

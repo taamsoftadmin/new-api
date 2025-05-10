@@ -95,4 +95,20 @@ func LoadEnv() {
 	GlobalWebRateLimitEnable = GetEnvOrDefaultBool("GLOBAL_WEB_RATE_LIMIT_ENABLE", true)
 	GlobalWebRateLimitNum = GetEnvOrDefault("GLOBAL_WEB_RATE_LIMIT", 60)
 	GlobalWebRateLimitDuration = int64(GetEnvOrDefault("GLOBAL_WEB_RATE_LIMIT_DURATION", 180))
+
+	// Initialize request/response logging settings
+	LogRequestEnabled = os.Getenv("LOG_REQUEST") == "true"
+	LogResponseEnabled = os.Getenv("LOG_RESPONSE") == "true"
+
+	if val := os.Getenv("MAX_LOG_REQ_LENGTH"); val != "" {
+		if parsed, err := strconv.Atoi(val); err == nil {
+			MaxLogReqLength = parsed
+		}
+	}
+
+	if val := os.Getenv("MAX_LOG_RESP_LENGTH"); val != "" {
+		if parsed, err := strconv.Atoi(val); err == nil {
+			MaxLogRespLength = parsed
+		}
+	}
 }
