@@ -363,3 +363,39 @@ func DeleteOldLog(ctx context.Context, targetTimestamp int64, limit int) (int64,
 
 	return total, nil
 }
+
+// GetLogById retrieves a single log entry by its ID (for admin use)
+func GetLogById(id int) (*Log, error) {
+	var log Log
+	err := LOG_DB.Where("id = ?", id).First(&log).Error
+	if err != nil {
+		return nil, err
+	}
+
+	// Get channel name if available
+	if log.ChannelId > 0 {
+		var channel struct {
+			Name string `gorm:"column:name"`
+		}
+		if DB.Table("channels").Select("name").Where("id = ?", log.ChannelId).First(&channel).Error == nil {
+			log.ChannelName = channel.Name
+		}
+	}
+
+	return &log, nil
+}
+
+// GetUserLogById retrieves a single log entry by its ID for a specific user
+func GetUserLogById(userId int, id int) (*Log, error) {
+	var log Log
+	err := LOG_DB.Where("user_id = ? AND id = ?", userId, id).First(&log).Error
+	if err != nil {
+		return nil, err
+	}
+
+	// Format the log for user viewing
+	logs := []*Log{&log}
+	formatUserLogs(logs)
+
+	return &log, nil
+}

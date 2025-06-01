@@ -1,10 +1,11 @@
 package controller
 
 import (
-	"github.com/gin-gonic/gin"
 	"one-api/model"
 	"one-api/setting"
 	"one-api/setting/operation_setting"
+
+	"github.com/gin-gonic/gin"
 )
 
 func GetPricing(c *gin.Context) {
@@ -24,18 +25,26 @@ func GetPricing(c *gin.Context) {
 	}
 
 	usableGroup = setting.GetUserUsableGroups(group)
-	// check groupRatio contains usableGroup
+	// Filter groupRatio to only include usable groups
 	for group := range setting.GetGroupRatioCopy() {
 		if _, ok := usableGroup[group]; !ok {
 			delete(groupRatio, group)
 		}
 	}
 
+	// Prepare additional system information
+	modelSettings := map[string]interface{}{
+		"display_currency": true,
+		"quota_per_unit":   500, // $1 = 500 quota
+		"usd_to_rmb":       7.3, // 1 USD = 7.3 RMB
+	}
+
 	c.JSON(200, gin.H{
-		"success":      true,
-		"data":         pricing,
-		"group_ratio":  groupRatio,
-		"usable_group": usableGroup,
+		"success":        true,
+		"data":           pricing,
+		"group_ratio":    groupRatio,
+		"usable_group":   usableGroup,
+		"model_settings": modelSettings,
 	})
 }
 
@@ -59,6 +68,6 @@ func ResetModelRatio(c *gin.Context) {
 	}
 	c.JSON(200, gin.H{
 		"success": true,
-		"message": "重置模型倍率成功",
+		"message": "Reset model ratio successfully",
 	})
 }
