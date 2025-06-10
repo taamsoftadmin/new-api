@@ -8,26 +8,22 @@ import (
 	"time"
 )
 
+// Pricing represents the pricing information for a model
 type Pricing struct {
-	ModelName          string            `json:"model_name"`
-	QuotaType          int               `json:"quota_type"`
-	ModelRatio         float64           `json:"model_ratio"`
-	ModelPrice         float64           `json:"model_price"`
-	OwnerBy            string            `json:"owner_by"`
-	CompletionRatio    float64           `json:"completion_ratio"`
-	EnableGroup        []string          `json:"enable_groups,omitempty"`
-	ImageRatio         float64           `json:"image_ratio,omitempty"`
-	CacheRatio         float64           `json:"cache_ratio,omitempty"`
-	CacheCreationRatio float64           `json:"cache_creation_ratio,omitempty"`
-	SupportedChannels  []ChannelTypeInfo `json:"supported_channels,omitempty"`
-	PricePerPrompt     float64           `json:"price_per_prompt,omitempty"`     // Price per 1M tokens
-	PricePerCompletion float64           `json:"price_per_completion,omitempty"` // Price per 1M tokens
-	ModelType          string            `json:"model_type,omitempty"`           // Model type classification (LLM, embedding, etc.)
-}
-
-type ChannelTypeInfo struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
+	ModelName          string                   `json:"model_name"`
+	QuotaType          int                      `json:"quota_type"`           // 0 = token-based, 1 = fixed price
+	ModelRatio         float64                  `json:"model_ratio"`          // Base ratio for model pricing
+	ModelPrice         float64                  `json:"model_price"`          // Fixed price per request (if applicable)
+	OwnerBy            string                   `json:"owner_by"`             // Model owner
+	CompletionRatio    float64                  `json:"completion_ratio"`     // Ratio for completion vs prompt
+	EnableGroups       []string                 `json:"enable_groups"`        // Enabled user groups
+	ImageRatio         float64                  `json:"image_ratio"`          // Image ratio if applicable
+	CacheRatio         float64                  `json:"cache_ratio"`          // Token cache ratio
+	CacheCreationRatio float64                  `json:"cache_creation_ratio"` // Token cache creation ratio
+	SupportedChannels  []map[string]interface{} `json:"supported_channels"`   // Supported channel types
+	PricePerPrompt     float64                  `json:"price_per_prompt"`     // Price per 1M prompt tokens
+	PricePerCompletion float64                  `json:"price_per_completion"` // Price per 1M completion tokens
+	ModelType          string                   `json:"model_type"`           // llm, embedding, etc.
 }
 
 var (
@@ -73,9 +69,9 @@ func updatePricing() {
 	pricingMap = make([]Pricing, 0)
 	for model, groups := range modelGroupsMap {
 		pricing := Pricing{
-			ModelName:   model,
-			EnableGroup: groups,
-			ModelType:   DetermineModelType(model), // Set the model type
+			ModelName:    model,
+			EnableGroups: groups,
+			ModelType:    DetermineModelType(model), // Set the model type
 		}
 
 		// Get model price or ratio
@@ -102,13 +98,13 @@ func updatePricing() {
 		// Get channel types that support this model
 		channels := modelChannelMap[model]
 		if channels != nil && len(channels) > 0 {
-			supportedChannels := make([]ChannelTypeInfo, 0)
+			supportedChannels := make([]map[string]interface{}, 0)
 			for channelType := range channels {
 				channelName := GetChannelTypeName(channelType)
 				if channelName != "" {
-					supportedChannels = append(supportedChannels, ChannelTypeInfo{
-						ID:   channelType,
-						Name: channelName,
+					supportedChannels = append(supportedChannels, map[string]interface{}{
+						"id":   channelType,
+						"name": channelName,
 					})
 				}
 			}
@@ -116,7 +112,7 @@ func updatePricing() {
 
 			// If we have channel information, set owner based on first channel
 			if len(supportedChannels) > 0 {
-				pricing.OwnerBy = supportedChannels[0].Name
+				pricing.OwnerBy = supportedChannels[0]["name"].(string)
 			}
 		}
 

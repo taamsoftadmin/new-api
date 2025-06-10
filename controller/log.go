@@ -234,25 +234,33 @@ func GetLogById(c *gin.Context) {
 	if isAdmin {
 		log, err = model.GetLogById(id)
 	} else {
+		// For regular users, supporting both real and obfuscated IDs
 		log, err = model.GetUserLogById(userId, id)
 	}
 
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
-			"message": err.Error(),
+			"message": "Log not found or access denied",
 		})
 		return
+	}
+
+	// Add ID information to help with troubleshooting
+	idInfo := map[string]interface{}{
+		"displayed_id":  id,
+		"actual_id":     log.Id,
+		"obfuscated_id": log.Id % 1024,
 	}
 
 	// Enrich the log with additional details
 	logs := []*model.Log{log}
 	enrichLogsWithDetails(logs)
 
-	// Get user's current quota for statistics using our new function
+	// Get user's current quota for statistics
 	userQuota, err := model.GetUserQuotaForStats(userId)
 	if err != nil {
-		userQuota = 0 // Default to 0 if we can't get the quota
+		userQuota = 0
 	}
 
 	// Calculate detailed statistics for this single log
@@ -264,6 +272,7 @@ func GetLogById(c *gin.Context) {
 		"data": map[string]any{
 			"log":        log,
 			"statistics": stats,
+			"id_info":    idInfo,
 		},
 	})
 }

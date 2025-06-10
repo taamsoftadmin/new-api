@@ -386,16 +386,20 @@ func GetLogById(id int) (*Log, error) {
 }
 
 // GetUserLogById retrieves a single log entry by its ID for a specific user
+// Now handles both real IDs and obfuscated IDs (id % 1024)
 func GetUserLogById(userId int, id int) (*Log, error) {
+	// First try direct lookup in case the caller provided the actual database ID
 	var log Log
 	err := LOG_DB.Where("user_id = ? AND id = ?", userId, id).First(&log).Error
-	if err != nil {
-		return nil, err
-	}
 
-	// Format the log for user viewing
-	logs := []*Log{&log}
-	formatUserLogs(logs)
+	// If not found, it might be an obfuscated ID, so look for a record where id % 1024 = provided ID
+	if err != nil {
+		// Modulo search - this finds logs where (id % 1024) = requested ID
+		err = LOG_DB.Where("user_id = ? AND MOD(id, 1024) = ?", userId, id).Order("id DESC").First(&log).Error
+		if err != nil {
+			return nil, err
+		}
+	}
 
 	return &log, nil
 }
