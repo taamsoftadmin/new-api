@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/tiktoken-go/tokenizer"
-	"github.com/tiktoken-go/tokenizer/codec"
 	"image"
 	"log"
 	"math"
@@ -16,6 +14,9 @@ import (
 	"strings"
 	"sync"
 	"unicode/utf8"
+
+	"github.com/tiktoken-go/tokenizer"
+	"github.com/tiktoken-go/tokenizer/codec"
 )
 
 // tokenEncoderMap won't grow after initialization
