@@ -20,6 +20,8 @@ func SetApiRouter(router *gin.Engine) {
 		apiRouter.POST("/models/search", middleware.UserAuth(), controller.SearchModels)
 		apiRouter.POST("/models/info", middleware.UserAuth(), controller.GetModelInfo)
 		apiRouter.GET("/models/enhanced", middleware.UserAuth(), controller.EnhancedListModels)
+		apiRouter.GET("/uptime/status", controller.GetUptimeKumaStatus)
+		apiRouter.GET("/models", middleware.UserAuth(), controller.DashboardListModels)
 		apiRouter.GET("/status/test", middleware.AdminAuth(), controller.TestStatus)
 		apiRouter.GET("/notice", controller.GetNotice)
 		apiRouter.GET("/about", controller.GetAbout)

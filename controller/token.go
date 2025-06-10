@@ -1,11 +1,12 @@
 package controller
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"one-api/common"
 	"one-api/model"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
 func GetAllTokens(c *gin.Context) {
@@ -154,9 +155,24 @@ func AddToken(c *gin.Context) {
 		})
 		return
 	}
+
+	// Return the full token data including the key
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
-		"message": "",
+		"message": "Token created successfully",
+		"data": gin.H{
+			"id":                   cleanToken.Id,
+			"name":                 cleanToken.Name,
+			"key":                  cleanToken.Key, // Include the key in response
+			"created_time":         cleanToken.CreatedTime,
+			"expired_time":         cleanToken.ExpiredTime,
+			"remain_quota":         cleanToken.RemainQuota,
+			"unlimited_quota":      cleanToken.UnlimitedQuota,
+			"model_limits_enabled": cleanToken.ModelLimitsEnabled,
+			"model_limits":         cleanToken.ModelLimits,
+			"allow_ips":            cleanToken.AllowIps,
+			"group":                cleanToken.Group,
+		},
 	})
 	return
 }
