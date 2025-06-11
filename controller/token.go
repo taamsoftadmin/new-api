@@ -124,15 +124,35 @@ func AddToken(c *gin.Context) {
 		})
 		return
 	}
-	key, err := common.GenerateKey()
-	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"message": "生成令牌失败",
-		})
-		common.SysError("failed to generate token key: " + err.Error())
-		return
+
+	// Check if a custom key was provided
+	var key string
+	if token.Key != "" {
+		// Use the provided key if it was supplied
+		key = token.Key
+
+		// Ensure the key has the minimum required length
+		if len(key) < 8 {
+			c.JSON(http.StatusOK, gin.H{
+				"success": false,
+				"message": "API key is too short, minimum length is 8 characters",
+			})
+			return
+		}
+	} else {
+		// Generate a random key if none was provided
+		var genErr error
+		key, genErr = common.GenerateKey()
+		if genErr != nil {
+			c.JSON(http.StatusOK, gin.H{
+				"success": false,
+				"message": "生成令牌失败",
+			})
+			common.SysError("failed to generate token key: " + genErr.Error())
+			return
+		}
 	}
+
 	cleanToken := model.Token{
 		UserId:             c.GetInt("id"),
 		Name:               token.Name,

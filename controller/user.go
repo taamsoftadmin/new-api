@@ -11,6 +11,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 
 	"one-api/constant"
 
@@ -769,6 +770,7 @@ func CreateUser(c *gin.Context) {
 type ManageRequest struct {
 	Id     int    `json:"id"`
 	Action string `json:"action"`
+	Quota  int    `json:"quota,omitempty"` // Add quota field for top-up feature
 }
 
 // ManageUser Only admin user can do this
@@ -862,6 +864,56 @@ func ManageUser(c *gin.Context) {
 			return
 		}
 		user.Role = common.RoleCommonUser
+	case "add_quota":
+		if req.Quota <= 0 {
+			c.JSON(http.StatusOK, gin.H{
+				"success": false,
+				"message": "无法添加小于或等于0的额度",
+			})
+			return
+		}
+
+		// Record the original quota for logging
+		originalQuota := user.Quota
+
+		// Increase user quota
+		err := model.IncreaseUserQuota(user.Id, req.Quota, true)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{
+				"success": false,
+				"message": "增加额度失败: " + err.Error(),
+			})
+			return
+		}
+
+		// Log the quota increase action
+		model.RecordLog(user.Id, model.LogTypeManage, fmt.Sprintf("管理员增加额度 %s", common.LogQuota(req.Quota)))
+
+		// Get updated user to return correct quota
+		updatedUser, err := model.GetUserById(user.Id, false)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{
+				"success": false,
+				"message": "获取更新后用户信息失败: " + err.Error(),
+			})
+			return
+		}
+
+		// Return the updated user info
+		c.JSON(http.StatusOK, gin.H{
+			"success": true,
+			"message": fmt.Sprintf("已成功添加 %s 额度", common.LogQuota(req.Quota)),
+			"data": gin.H{
+				"id":             updatedUser.Id,
+				"username":       updatedUser.Username,
+				"display_name":   updatedUser.DisplayName,
+				"quota":          updatedUser.Quota,
+				"used_quota":     updatedUser.UsedQuota,
+				"original_quota": originalQuota,
+				"added_quota":    req.Quota,
+			},
+		})
+		return
 	}
 
 	if err := user.Update(false); err != nil {
@@ -1070,4 +1122,124 @@ func UpdateUserSetting(c *gin.Context) {
 		"success": true,
 		"message": "设置已更新",
 	})
+}
+
+// GetUserStatistics returns comprehensive usage statistics for the authenticated user
+func GetUserStatistics(c *gin.Context) {
+	userId := c.GetInt("id")
+
+	// Get time range parameters (optional)
+	startTimestamp, _ := strconv.ParseInt(c.Query("start_timestamp"), 10, 64)
+	endTimestamp, _ := strconv.ParseInt(c.Query("end_timestamp"), 10, 64)
+
+	// Default to last 30 days if no time range is specified
+	if startTimestamp == 0 {
+		startTimestamp = time.Now().AddDate(0, 0, -30).Unix()
+	}
+
+	// Default to current time if end timestamp is not provided
+	if endTimestamp == 0 {
+		endTimestamp = time.Now().Unix()
+	}
+
+	// Get user logs for the specified time range (use type 2 for consumption logs)
+	logs, _, err := model.GetUserLogs(userId, model.LogTypeConsume, startTimestamp, endTimestamp, "", "", 0, 1000, "")
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"message": "Failed to retrieve logs: " + err.Error(),
+		})
+		return
+	}
+
+	// Get user's current quota for statistics
+	userQuota, err := model.GetUserQuotaForStats(userId)
+	if err != nil {
+		userQuota = 0 // Default to 0 if we can't get the quota
+	}
+
+	// Get user's used quota
+	userUsedQuota, err := model.GetUserUsedQuota(userId)
+	if err != nil {
+		userUsedQuota = 0
+	}
+
+	// Calculate remaining quota
+	remainQuota := userQuota - userUsedQuota
+	if remainQuota < 0 {
+		remainQuota = 0
+	}
+
+	// Calculate statistics for the logs
+	stats := model.CalculateLogStatistics(logs, userQuota)
+
+	// Calculate usage in the specified period
+	var usageInPeriod int = 0
+	for _, log := range logs {
+		if log.Type == model.LogTypeConsume {
+			usageInPeriod += log.Quota
+		}
+	}
+
+	// Format quota values for display
+	formattedQuota := common.LogQuota(userQuota)
+	formattedUsedQuota := common.LogQuota(userUsedQuota)
+	formattedRemainQuota := common.LogQuota(remainQuota)
+	formattedUsageInPeriod := common.LogQuota(usageInPeriod)
+
+	// Create a dedicated balance section
+	balanceInfo := gin.H{
+		"total_quota":     userQuota,
+		"used_quota":      userUsedQuota,
+		"remain_quota":    remainQuota,
+		"usage_in_period": usageInPeriod,
+		"formatted": gin.H{
+			"total":        formattedQuota,
+			"used":         formattedUsedQuota,
+			"remain":       formattedRemainQuota,
+			"period_usage": formattedUsageInPeriod,
+		},
+		"percentage": gin.H{
+			"used":   fmt.Sprintf("%.2f%%", float64(userUsedQuota)/float64(userQuota)*100),
+			"remain": fmt.Sprintf("%.2f%%", float64(remainQuota)/float64(userQuota)*100),
+		},
+	}
+
+	// Get user details for additional context
+	user, err := model.GetUserById(userId, false)
+	if err == nil {
+		// Add user-specific data to the response
+		c.JSON(http.StatusOK, gin.H{
+			"success": true,
+			"data": gin.H{
+				"statistics": stats,
+				"balance":    balanceInfo,
+				"user": gin.H{
+					"username":      user.Username,
+					"display_name":  user.DisplayName,
+					"group":         user.Group,
+					"quota":         user.Quota,
+					"used_quota":    user.UsedQuota,
+					"request_count": user.RequestCount,
+				},
+				"time_range": gin.H{
+					"start": startTimestamp,
+					"end":   endTimestamp,
+				},
+			},
+		})
+	} else {
+		// Return just the statistics if we couldn't get the user
+		c.JSON(http.StatusOK, gin.H{
+			"success": true,
+			"data": gin.H{
+				"statistics": stats,
+				"balance":    balanceInfo,
+				"time_range": gin.H{
+					"start": startTimestamp,
+					"end":   endTimestamp,
+				},
+			},
+		})
+	}
 }
