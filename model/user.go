@@ -216,7 +216,7 @@ func SearchUsers(keyword string, group string, startIdx int, num int) ([]*User, 
 
 func GetUserById(id int, selectAll bool) (*User, error) {
 	if id == 0 {
-		return nil, errors.New("id 为空！")
+		return nil, errors.New("ID is empty")
 	}
 	user := User{Id: id}
 	var err error = nil
@@ -230,7 +230,7 @@ func GetUserById(id int, selectAll bool) (*User, error) {
 
 func GetUserIdByAffCode(affCode string) (int, error) {
 	if affCode == "" {
-		return 0, errors.New("affCode 为空！")
+		return 0, errors.New("affCode is empty")
 	}
 	var user User
 	err := DB.Select("id").First(&user, "aff_code = ?", affCode).Error
@@ -239,7 +239,7 @@ func GetUserIdByAffCode(affCode string) (int, error) {
 
 func DeleteUserById(id int) (err error) {
 	if id == 0 {
-		return errors.New("id 为空！")
+		return errors.New("ID is empty")
 	}
 	user := User{Id: id}
 	return user.Delete()
@@ -265,39 +265,39 @@ func inviteUser(inviterId int) (err error) {
 }
 
 func (user *User) TransferAffQuotaToQuota(quota int) error {
-	// 检查quota是否小于最小额度
+	// Check if quota is less than minimum amount
 	if float64(quota) < common.QuotaPerUnit {
-		return fmt.Errorf("转移额度最小为%s！", common.LogQuota(int(common.QuotaPerUnit)))
+		return fmt.Errorf("Minimum transfer amount is %s", common.LogQuota(int(common.QuotaPerUnit)))
 	}
 
-	// 开始数据库事务
+	// Begin database transaction
 	tx := DB.Begin()
 	if tx.Error != nil {
 		return tx.Error
 	}
-	defer tx.Rollback() // 确保在函数退出时事务能回滚
+	defer tx.Rollback() // Ensure transaction can be rolled back on function exit
 
-	// 加锁查询用户以确保数据一致性
+	// Lock and query user to ensure data consistency
 	err := tx.Set("gorm:query_option", "FOR UPDATE").First(&user, user.Id).Error
 	if err != nil {
 		return err
 	}
 
-	// 再次检查用户的AffQuota是否足够
+	// Check again if user's AffQuota is sufficient
 	if user.AffQuota < quota {
-		return errors.New("邀请额度不足！")
+		return errors.New("Insufficient invitation quota")
 	}
 
-	// 更新用户额度
+	// Update user quota
 	user.AffQuota -= quota
 	user.Quota += quota
 
-	// 保存用户状态
+	// Save user status
 	if err := tx.Save(user).Error; err != nil {
 		return err
 	}
 
-	// 提交事务
+	// Commit transaction
 	return tx.Commit().Error
 }
 

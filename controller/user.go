@@ -183,10 +183,9 @@ func Register(c *gin.Context) {
 		Password:    user.Password,
 		DisplayName: user.Username,
 		InviterId:   inviterId,
+		Email:       user.Email, // Always store the email if provided
 	}
-	if common.EmailVerificationEnabled {
-		cleanUser.Email = user.Email
-	}
+
 	if err := cleanUser.Insert(inviterId); err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,

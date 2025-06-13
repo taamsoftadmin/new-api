@@ -803,7 +803,105 @@ func createEnhancedModel(modelName string) dto.EnhancedModel {
 		}
 	}
 
-	return createEnhancedModelFromOpenAI(openAIModel)
+	enhanced := createEnhancedModelFromOpenAI(openAIModel)
+
+	// Add available channels information
+	enhanced.Channels = getChannelsForModel(modelName)
+
+	return enhanced
+}
+
+// Helper function to get available channels for a model
+func getChannelsForModel(modelName string) []dto.AvailableChannel {
+	channels := make([]dto.AvailableChannel, 0)
+
+	// Query the database to find channels that can serve this model
+	abilities := model.GetModelAbilities(modelName)
+
+	// Create a map to store unique channel IDs
+	channelMap := make(map[int]bool)
+
+	// Process each ability to extract channel information
+	for _, ability := range abilities {
+		if ability.Enabled && !channelMap[ability.ChannelId] {
+			channelMap[ability.ChannelId] = true
+
+			// Get channel details from database
+			channel, err := model.GetChannelById(ability.ChannelId, false) // Add 'false' as second parameter
+			if err != nil {
+				continue
+			}
+
+			// Get channel type name
+			channelTypeName := getChannelTypeNameById(channel.Type)
+
+			// Add channel to result
+			channels = append(channels, dto.AvailableChannel{
+				Id:       channel.Id,
+				Name:     channel.Name,
+				Type:     channel.Type,
+				TypeName: channelTypeName,
+				Status:   channel.Status,
+				Priority: int(derefInt64(ability.Priority)), // Convert *int64 to int
+				Weight:   int(ability.Weight),               // Convert uint to int
+				Enabled:  channel.Status == common.ChannelStatusEnabled,
+			})
+		}
+	}
+
+	return channels
+}
+
+// Helper function to safely dereference an *int64 with a default value of 0
+func derefInt64(ptr *int64) int64 {
+	if ptr == nil {
+		return 0
+	}
+	return *ptr
+}
+
+// Helper function to get channel type name by ID
+func getChannelTypeNameById(typeId int) string {
+	channelTypes := map[int]string{
+		1:  "OpenAI",
+		2:  "Azure",
+		3:  "Claude",
+		4:  "PaLM",
+		5:  "Gemini",
+		6:  "Baidu",
+		7:  "Zhipu",
+		8:  "Xunfei",
+		9:  "Midjourney",
+		10: "DALL-E",
+		11: "Ali",
+		12: "Baichuan",
+		13: "AWS Bedrock",
+		14: "Moonshot",
+		15: "MinimaxAI",
+		16: "DeepSeek",
+		17: "Gemma",
+		18: "Tencent",
+		19: "Ollama",
+		20: "Mistral",
+		21: "Qwen",
+		22: "OpenRouter",
+		23: "Douyin",
+		24: "Google",
+		25: "360",
+		26: "Suno",
+		27: "Yi",
+		28: "Anthropic",
+		29: "PerplexityAI",
+		30: "Together AI",
+		31: "Lingyiwanwu",
+		32: "Groq",
+		33: "Cohere",
+	}
+
+	if name, exists := channelTypes[typeId]; exists {
+		return name
+	}
+	return "Unknown"
 }
 
 // Helper function to create an enhanced model from an OpenAI model
@@ -826,8 +924,11 @@ func createEnhancedModelFromOpenAI(openAIModel dto.OpenAIModels) dto.EnhancedMod
 	pricePerPrompt := modelRatio * 2.0 // $0.002 per 1K tokens = $2.0 per 1M tokens
 	pricePerCompletion := pricePerPrompt * completionRatio
 
-	// Determine the channel type
-	channelType := getChannelTypeForModel(openAIModel.OwnedBy)
+	// Get available channels for this model to use for channel type information
+	availableChannels := getChannelsForModel(modelName)
+
+	// Determine the channel type - use information from the first available channel if possible
+	channelType := getChannelTypeForModel(openAIModel.OwnedBy, availableChannels)
 
 	// Set capabilities based on model type
 	capabilities := getModelCapabilities(modelName, modelType)
@@ -868,6 +969,7 @@ func createEnhancedModelFromOpenAI(openAIModel dto.OpenAIModels) dto.EnhancedMod
 			ModelPrice:         modelPrice,
 		},
 		Capabilities: capabilities,
+		Channels:     availableChannels,
 	}
 
 	// If it's a fixed price model, set the price directly
@@ -937,21 +1039,33 @@ func determineModelGroup(modelName string) string {
 }
 
 // Helper function to get channel type information
-func getChannelTypeForModel(ownedBy string) dto.ModelChannelType {
-	// Map owner to channel types
+func getChannelTypeForModel(ownedBy string, availableChannels []dto.AvailableChannel) dto.ModelChannelType {
+	// If we have available channels, use the first one for channel type information
+	if len(availableChannels) > 0 {
+		return dto.ModelChannelType{
+			Id:       availableChannels[0].Type,
+			Name:     availableChannels[0].Name,
+			Type:     availableChannels[0].Type,
+			TypeName: availableChannels[0].TypeName,
+			Status:   availableChannels[0].Status,
+			Enabled:  availableChannels[0].Enabled,
+		}
+	}
+
+	// Fallback to mapping based on ownedBy if no channels are available
 	channelTypeMap := map[string]dto.ModelChannelType{
-		"openai":     {Id: 1, Name: "OpenAI", ChannelName: "openai"},
-		"anthropic":  {Id: 3, Name: "Claude", ChannelName: "anthropic"},
-		"google":     {Id: 24, Name: "Gemini", ChannelName: "google"},
-		"microsoft":  {Id: 2, Name: "Azure", ChannelName: "microsoft"},
-		"midjourney": {Id: 9, Name: "Midjourney", ChannelName: "midjourney"},
-		"baidu":      {Id: 6, Name: "Baidu", ChannelName: "baidu"},
-		"zhipu":      {Id: 7, Name: "Zhipu", ChannelName: "zhipu"},
-		"ali":        {Id: 11, Name: "Ali", ChannelName: "ali"},
-		"tencent":    {Id: 18, Name: "Tencent", ChannelName: "tencent"},
-		"mistral":    {Id: 20, Name: "Mistral", ChannelName: "mistral"},
-		"cohere":     {Id: 33, Name: "Cohere", ChannelName: "cohere"},
-		"jina":       {Id: 0, Name: "Jina", ChannelName: "jina"},
+		"openai":     {Id: 1, Name: "Open AI", Type: 1, TypeName: "OpenAI", Status: 1, Enabled: true},
+		"anthropic":  {Id: 3, Name: "Claude", Type: 3, TypeName: "Claude", Status: 1, Enabled: true},
+		"google":     {Id: 24, Name: "Google", Type: 24, TypeName: "Gemini", Status: 1, Enabled: true},
+		"microsoft":  {Id: 2, Name: "Microsoft", Type: 2, TypeName: "Azure", Status: 1, Enabled: true},
+		"midjourney": {Id: 9, Name: "Midjourney", Type: 9, TypeName: "Midjourney", Status: 1, Enabled: true},
+		"baidu":      {Id: 6, Name: "Baidu", Type: 6, TypeName: "Baidu", Status: 1, Enabled: true},
+		"zhipu":      {Id: 7, Name: "Zhipu", Type: 7, TypeName: "Zhipu", Status: 1, Enabled: true},
+		"ali":        {Id: 11, Name: "Ali", Type: 11, TypeName: "Ali", Status: 1, Enabled: true},
+		"tencent":    {Id: 18, Name: "Tencent", Type: 18, TypeName: "Tencent", Status: 1, Enabled: true},
+		"mistral":    {Id: 20, Name: "Mistral", Type: 20, TypeName: "Mistral", Status: 1, Enabled: true},
+		"cohere":     {Id: 33, Name: "Cohere", Type: 33, TypeName: "Cohere", Status: 1, Enabled: true},
+		"jina":       {Id: 0, Name: "Jina", Type: 0, TypeName: "Jina", Status: 1, Enabled: true},
 	}
 
 	if channelType, exists := channelTypeMap[strings.ToLower(ownedBy)]; exists {
@@ -960,9 +1074,12 @@ func getChannelTypeForModel(ownedBy string) dto.ModelChannelType {
 
 	// Default channel type
 	return dto.ModelChannelType{
-		Id:          0,
-		Name:        ownedBy,
-		ChannelName: strings.ToLower(ownedBy),
+		Id:       0,
+		Name:     ownedBy,
+		Type:     0,
+		TypeName: strings.ToLower(ownedBy),
+		Status:   1,
+		Enabled:  true,
 	}
 }
 

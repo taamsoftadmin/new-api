@@ -50,7 +50,7 @@ func getPriority(group string, model string, retry int) (int, error) {
 	err := DB.Model(&Ability{}).
 		Select("DISTINCT(priority)").
 		Where(groupCol+" = ? and model = ? and enabled = "+trueVal, group, model).
-		Order("priority DESC"). // 按优先级降序排序
+		Order("priority DESC").              // 按优先级降序排序
 		Pluck("priority", &priorities).Error // Pluck用于将查询的结果直接扫描到一个切片中
 
 	if err != nil {
@@ -322,4 +322,14 @@ func FixAbility() (int, error) {
 	}
 	InitChannelCache()
 	return count, nil
+}
+
+// GetModelAbilities retrieves all abilities for the given model
+func GetModelAbilities(modelName string) []Ability {
+	var abilities []Ability
+	err := DB.Where("model = ?", modelName).Find(&abilities).Error
+	if err != nil {
+		return []Ability{}
+	}
+	return abilities
 }

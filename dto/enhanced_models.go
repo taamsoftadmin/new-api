@@ -20,6 +20,7 @@ type EnhancedModel struct {
 	Category     string                  `json:"category"`
 	Group        string                  `json:"group"`
 	ChannelType  ModelChannelType        `json:"channel_type"`
+	Channels     []AvailableChannel      `json:"available_channels"` // List of available channels
 }
 
 // ModelStats provides usage statistics for a model
@@ -62,7 +63,22 @@ type ModelCapabilities struct {
 
 // ModelChannelType provides information about the channel type
 type ModelChannelType struct {
-	Id          int    `json:"id"`
-	Name        string `json:"name"`
-	ChannelName string `json:"channel_name"`
+	Id       int    `json:"id"`
+	Name     string `json:"name"`
+	Type     int    `json:"type"`
+	TypeName string `json:"type_name"`
+	Status   int    `json:"status"`
+	Enabled  bool   `json:"enabled"`
+}
+
+// AvailableChannel represents a channel that can serve a model
+type AvailableChannel struct {
+	Id       int    `json:"id"`
+	Name     string `json:"name"`
+	Type     int    `json:"type"`
+	TypeName string `json:"type_name"`
+	Status   int    `json:"status"`
+	Priority int    `json:"priority,omitempty"`
+	Weight   int    `json:"weight,omitempty"`
+	Enabled  bool   `json:"enabled"`
 }
