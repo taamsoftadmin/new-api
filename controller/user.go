@@ -1244,3 +1244,24 @@ func GetUserStatistics(c *gin.Context) {
 		})
 	}
 }
+
+// GetUserSetting returns the current user's settings
+func GetUserSetting(c *gin.Context) {
+	userId := c.GetInt("id")
+
+	// Get user settings from cache or DB
+	settingMap, err := model.GetUserSetting(userId, false)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"message": "Failed to retrieve settings: " + err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"message": "",
+		"data":    settingMap,
+	})
+}

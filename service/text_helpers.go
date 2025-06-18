@@ -9,7 +9,7 @@ import (
 
 // GenerateTextOtherInfo generates the "other" map for text API logs
 func GenerateTextOtherInfo(c *gin.Context, info *relaycommon.RelayInfo, modelRatio, groupRatio, completionRatio float64,
-	cacheTokens int, cacheRatio float64, modelPrice float64) map[string]interface{} {
+	cacheTokens int, cacheRatio float64, modelPrice float64, userGroupRatio float64) map[string]interface{} {
 
 	other := make(map[string]interface{})
 	other["model_ratio"] = modelRatio
@@ -17,6 +17,8 @@ func GenerateTextOtherInfo(c *gin.Context, info *relaycommon.RelayInfo, modelRat
 	other["completion_ratio"] = completionRatio
 	other["cache_tokens"] = cacheTokens
 	other["cache_ratio"] = cacheRatio
+	other["model_price"] = modelPrice
+	other["user_group_ratio"] = userGroupRatio
 
 	// Add first response time if available
 	if info.FirstResponseTime.After(info.StartTime) {

@@ -10,29 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GenerateTextOtherInfo(ctx *gin.Context, relayInfo *relaycommon.RelayInfo, modelRatio, groupRatio, completionRatio float64,
-	cacheTokens int, cacheRatio float64, modelPrice float64, userGroupRatio float64) map[string]interface{} {
-	other := make(map[string]interface{})
-	other["model_ratio"] = modelRatio
-	other["group_ratio"] = groupRatio
-	other["completion_ratio"] = completionRatio
-	other["cache_tokens"] = cacheTokens
-	other["cache_ratio"] = cacheRatio
-	other["model_price"] = modelPrice
-	other["user_group_ratio"] = userGroupRatio
-	other["frt"] = float64(relayInfo.FirstResponseTime.UnixMilli() - relayInfo.StartTime.UnixMilli())
-	if relayInfo.ReasoningEffort != "" {
-		other["reasoning_effort"] = relayInfo.ReasoningEffort
-	}
-	if relayInfo.IsModelMapped {
-		other["is_model_mapped"] = true
-		other["upstream_model_name"] = relayInfo.UpstreamModelName
-	}
-	adminInfo := make(map[string]interface{})
-	adminInfo["use_channel"] = ctx.GetStringSlice("use_channel")
-	other["admin_info"] = adminInfo
-	return other
-}
+// Import functions for other types of logs
 
 func GenerateWssOtherInfo(ctx *gin.Context, relayInfo *relaycommon.RelayInfo, usage *dto.RealtimeUsage, modelRatio, groupRatio, completionRatio, audioRatio, audioCompletionRatio, modelPrice, userGroupRatio float64) map[string]interface{} {
 	info := GenerateTextOtherInfo(ctx, relayInfo, modelRatio, groupRatio, completionRatio, 0, 0.0, modelPrice, userGroupRatio)
