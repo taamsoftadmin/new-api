@@ -2,7 +2,7 @@ package model
 
 import (
 	"one-api/common"
-	"one-api/setting/operation_setting"
+	"one-api/setting/ratio_setting"
 	"strings"
 	"sync"
 	"time"
@@ -73,16 +73,14 @@ func updatePricing() {
 			EnableGroups: groups,
 			ModelType:    DetermineModelType(model), // Set the model type
 		}
-
-		// Get model price or ratio
-		modelPrice, findPrice := operation_setting.GetModelPrice(model, false)
+		modelPrice, findPrice := ratio_setting.GetModelPrice(model, false)
 		if findPrice {
 			pricing.ModelPrice = modelPrice
 			pricing.QuotaType = 1
 		} else {
-			modelRatio, _ := operation_setting.GetModelRatio(model)
+			modelRatio, _ := ratio_setting.GetModelRatio(model)
 			pricing.ModelRatio = modelRatio
-			pricing.CompletionRatio = operation_setting.GetCompletionRatio(model)
+			pricing.CompletionRatio = ratio_setting.GetCompletionRatio(model)
 			pricing.QuotaType = 0
 
 			// Calculate price per 1M tokens based on model ratio (1 ratio = $0.002 / 1K tokens = $2 / 1M tokens)
@@ -91,9 +89,9 @@ func updatePricing() {
 		}
 
 		// Get additional model-related ratios
-		pricing.CacheRatio, _ = operation_setting.GetCacheRatio(model)
-		pricing.CacheCreationRatio, _ = operation_setting.GetCreateCacheRatio(model)
-		pricing.ImageRatio, _ = operation_setting.GetImageRatio(model)
+		pricing.CacheRatio, _ = ratio_setting.GetCacheRatio(model)
+		pricing.CacheCreationRatio, _ = ratio_setting.GetCreateCacheRatio(model)
+		pricing.ImageRatio, _ = ratio_setting.GetImageRatio(model)
 
 		// Get channel types that support this model
 		channels := modelChannelMap[model]

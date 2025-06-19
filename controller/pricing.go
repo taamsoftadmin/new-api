@@ -3,7 +3,7 @@ package controller
 import (
 	"one-api/model"
 	"one-api/setting"
-	"one-api/setting/operation_setting"
+	"one-api/setting/ratio_setting"
 
 	"github.com/gin-gonic/gin"
 )
@@ -13,7 +13,7 @@ func GetPricing(c *gin.Context) {
 	userId, exists := c.Get("id")
 	usableGroup := map[string]string{}
 	groupRatio := map[string]float64{}
-	for s, f := range setting.GetGroupRatioCopy() {
+	for s, f := range ratio_setting.GetGroupRatioCopy() {
 		groupRatio[s] = f
 	}
 	var group string
@@ -22,7 +22,7 @@ func GetPricing(c *gin.Context) {
 		if err == nil {
 			group = user.Group
 			for g := range groupRatio {
-				ratio, ok := setting.GetGroupGroupRatio(group, g)
+				ratio, ok := ratio_setting.GetGroupGroupRatio(group, g)
 				if ok {
 					groupRatio[g] = ratio
 				}
@@ -31,8 +31,8 @@ func GetPricing(c *gin.Context) {
 	}
 
 	usableGroup = setting.GetUserUsableGroups(group)
-	// Filter groupRatio to only include usable groups
-	for group := range setting.GetGroupRatioCopy() {
+	// check groupRatio contains usableGroup
+	for group := range ratio_setting.GetGroupRatioCopy() {
 		if _, ok := usableGroup[group]; !ok {
 			delete(groupRatio, group)
 		}
@@ -126,7 +126,7 @@ func enhancePricingData(pricing []map[string]interface{}) []map[string]interface
 }
 
 func ResetModelRatio(c *gin.Context) {
-	defaultStr := operation_setting.DefaultModelRatio2JSONString()
+	defaultStr := ratio_setting.DefaultModelRatio2JSONString()
 	err := model.UpdateOption("ModelRatio", defaultStr)
 	if err != nil {
 		c.JSON(200, gin.H{
@@ -135,7 +135,7 @@ func ResetModelRatio(c *gin.Context) {
 		})
 		return
 	}
-	err = operation_setting.UpdateModelRatioByJSONString(defaultStr)
+	err = ratio_setting.UpdateModelRatioByJSONString(defaultStr)
 	if err != nil {
 		c.JSON(200, gin.H{
 			"success": false,

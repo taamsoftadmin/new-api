@@ -14,7 +14,8 @@ import (
 	"one-api/relay/channel/moonshot"
 	relaycommon "one-api/relay/common"
 	relayconstant "one-api/relay/constant"
-	"one-api/setting/operation_setting"
+	"one-api/setting/ratio_setting"
+
 	"sort"
 	"strings"
 
@@ -411,9 +412,9 @@ func GetModelInfo(c *gin.Context) {
 	}
 
 	// Make sure we're using the most accurate pricing data available
-	modelRatio, _ := operation_setting.GetModelRatio(request.ModelID)
-	completionRatio := operation_setting.GetCompletionRatio(request.ModelID)
-	modelPrice, isFixedPrice := operation_setting.GetModelPrice(request.ModelID, false)
+	modelRatio, _ := ratio_setting.GetModelRatio(request.ModelID)
+	completionRatio := ratio_setting.GetCompletionRatio(request.ModelID)
+	modelPrice, isFixedPrice := ratio_setting.GetModelPrice(request.ModelID, false)
 
 	// Calculate quota type based on fixed price flag
 	quotaType := 0
@@ -461,7 +462,7 @@ func GetModelInfo(c *gin.Context) {
 	enhancedModel.Pricing.OutputTokenPrice = pricePerCompletion
 
 	// Get actual price from DB if available
-	priceMap := operation_setting.GetModelPriceMap()
+	priceMap := ratio_setting.GetModelPriceMap()
 	if !isFixedPrice && priceMap != nil && priceMap[request.ModelID] > 0 {
 		// Convert DB price (per token) to per million tokens
 		actualPricePerMillion := priceMap[request.ModelID] * 1000000
@@ -910,9 +911,9 @@ func createEnhancedModelFromOpenAI(openAIModel dto.OpenAIModels) dto.EnhancedMod
 	modelType := model.DetermineModelType(modelName)
 
 	// Get pricing information from operation settings
-	modelRatio, _ := operation_setting.GetModelRatio(modelName)
-	completionRatio := operation_setting.GetCompletionRatio(modelName)
-	modelPrice, fixedPrice := operation_setting.GetModelPrice(modelName, false)
+	modelRatio, _ := ratio_setting.GetModelRatio(modelName)
+	completionRatio := ratio_setting.GetCompletionRatio(modelName)
+	modelPrice, fixedPrice := ratio_setting.GetModelPrice(modelName, false)
 
 	// Calculate pricing details in the format matching the pricing API
 	quotaType := 0
@@ -987,7 +988,7 @@ func createEnhancedModelFromOpenAI(openAIModel dto.OpenAIModels) dto.EnhancedMod
 			enhanced.Pricing.OutputTokenPrice)
 
 		// Get actual price from DB if available
-		priceMap := operation_setting.GetModelPriceMap()
+		priceMap := ratio_setting.GetModelPriceMap()
 		if priceMap != nil && priceMap[modelName] > 0 {
 			// Convert DB price (per token) to per million tokens
 			actualPricePerMillion := priceMap[modelName] * 1000000
@@ -1144,7 +1145,7 @@ func getModelCapabilities(modelName string, modelType string) dto.ModelCapabilit
 // Helper function to get actual model prices from DB
 func getModelPricesFromDB() map[string]float64 {
 	// Get the full pricing map from the database
-	prices := operation_setting.GetModelPriceMap()
+	prices := ratio_setting.GetModelPriceMap()
 	if prices == nil {
 		return make(map[string]float64)
 	}
