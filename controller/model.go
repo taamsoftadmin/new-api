@@ -28,28 +28,46 @@ var openAIModels []dto.OpenAIModels
 var openAIModelsMap map[string]dto.OpenAIModels
 var channelId2Models map[int][]string
 
-func getPermission() []dto.OpenAIModelPermission {
-	var permission []dto.OpenAIModelPermission
-	permission = append(permission, dto.OpenAIModelPermission{
-		Id:                 "modelperm-LwHkVFn8AcMItP432fKKDIKJ",
+// Generate model-specific permissions based on model characteristics
+func generateModelPermission(modelId string) []dto.OpenAIModelPermission {
+	// Generate a permission object with default values
+	permission := dto.OpenAIModelPermission{
+		Id:                 modelId, // Base the ID on the model ID
 		Object:             "model_permission",
-		Created:            1626777600,
-		AllowCreateEngine:  true,
-		AllowSampling:      true,
-		AllowLogprobs:      true,
+		AllowCreateEngine:  false, // Most models don't support this
+		AllowSampling:      true,  // Most models support sampling
+		AllowLogprobs:      false, // Only specific models support this
 		AllowSearchIndices: false,
-		AllowView:          true,
-		AllowFineTuning:    false,
+		AllowView:          true,  // All models support viewing
+		AllowFineTuning:    false, // Most models don't support fine-tuning
 		Organization:       "*",
 		Group:              nil,
 		IsBlocking:         false,
-	})
-	return permission
+	}
+
+	// Adjust permissions based on model name patterns
+	if strings.Contains(strings.ToLower(modelId), "gpt-3") {
+		permission.AllowLogprobs = true
+	}
+
+	if strings.Contains(strings.ToLower(modelId), "davinci") ||
+		strings.Contains(strings.ToLower(modelId), "curie") ||
+		strings.Contains(strings.ToLower(modelId), "babbage") ||
+		strings.Contains(strings.ToLower(modelId), "ada") {
+		permission.AllowLogprobs = true
+	}
+
+	// Enable fine-tuning for specific models
+	if strings.Contains(strings.ToLower(modelId), "ft-") ||
+		strings.Contains(strings.ToLower(modelId), "fine-tuned") {
+		permission.AllowFineTuning = true
+	}
+
+	return []dto.OpenAIModelPermission{permission}
 }
 
 func init() {
 	// https://platform.openai.com/docs/models/model-endpoint-compatibility
-	permission := getPermission()
 	for i := 0; i < relayconstant.APITypeDummy; i++ {
 		if i == relayconstant.APITypeAIProxyLibrary {
 			continue
@@ -61,9 +79,8 @@ func init() {
 			openAIModels = append(openAIModels, dto.OpenAIModels{
 				Id:         modelName,
 				Object:     "model",
-				Created:    1626777600,
 				OwnedBy:    channelName,
-				Permission: permission,
+				Permission: generateModelPermission(modelName),
 				Root:       modelName,
 				Parent:     nil,
 			})
@@ -73,9 +90,8 @@ func init() {
 		openAIModels = append(openAIModels, dto.OpenAIModels{
 			Id:         modelName,
 			Object:     "model",
-			Created:    1626777600,
 			OwnedBy:    ai360.ChannelName,
-			Permission: permission,
+			Permission: generateModelPermission(modelName),
 			Root:       modelName,
 			Parent:     nil,
 		})
@@ -84,9 +100,8 @@ func init() {
 		openAIModels = append(openAIModels, dto.OpenAIModels{
 			Id:         modelName,
 			Object:     "model",
-			Created:    1626777600,
 			OwnedBy:    moonshot.ChannelName,
-			Permission: permission,
+			Permission: generateModelPermission(modelName),
 			Root:       modelName,
 			Parent:     nil,
 		})
@@ -95,9 +110,8 @@ func init() {
 		openAIModels = append(openAIModels, dto.OpenAIModels{
 			Id:         modelName,
 			Object:     "model",
-			Created:    1626777600,
 			OwnedBy:    lingyiwanwu.ChannelName,
-			Permission: permission,
+			Permission: generateModelPermission(modelName),
 			Root:       modelName,
 			Parent:     nil,
 		})
@@ -106,9 +120,8 @@ func init() {
 		openAIModels = append(openAIModels, dto.OpenAIModels{
 			Id:         modelName,
 			Object:     "model",
-			Created:    1626777600,
 			OwnedBy:    minimax.ChannelName,
-			Permission: permission,
+			Permission: generateModelPermission(modelName),
 			Root:       modelName,
 			Parent:     nil,
 		})
@@ -117,9 +130,8 @@ func init() {
 		openAIModels = append(openAIModels, dto.OpenAIModels{
 			Id:         modelName,
 			Object:     "model",
-			Created:    1626777600,
 			OwnedBy:    "midjourney",
-			Permission: permission,
+			Permission: generateModelPermission(modelName),
 			Root:       modelName,
 			Parent:     nil,
 		})
@@ -143,7 +155,6 @@ func init() {
 
 func ListModels(c *gin.Context) {
 	userOpenAiModels := make([]dto.OpenAIModels, 0)
-	permission := getPermission()
 
 	modelLimitEnable := c.GetBool("token_model_limit_enabled")
 	if modelLimitEnable {
@@ -161,9 +172,8 @@ func ListModels(c *gin.Context) {
 				userOpenAiModels = append(userOpenAiModels, dto.OpenAIModels{
 					Id:         allowModel,
 					Object:     "model",
-					Created:    1626777600,
 					OwnedBy:    "custom",
-					Permission: permission,
+					Permission: generateModelPermission(allowModel),
 					Root:       allowModel,
 					Parent:     nil,
 				})
@@ -192,9 +202,8 @@ func ListModels(c *gin.Context) {
 				userOpenAiModels = append(userOpenAiModels, dto.OpenAIModels{
 					Id:         s,
 					Object:     "model",
-					Created:    1626777600,
 					OwnedBy:    "custom",
-					Permission: permission,
+					Permission: generateModelPermission(s),
 					Root:       s,
 					Parent:     nil,
 				})
@@ -798,7 +807,7 @@ func createEnhancedModel(modelName string) dto.EnhancedModel {
 			Object:     "model",
 			Created:    1626777600,
 			OwnedBy:    "custom",
-			Permission: getPermission(),
+			Permission: generateModelPermission(modelName),
 			Root:       modelName,
 			Parent:     nil,
 		}
